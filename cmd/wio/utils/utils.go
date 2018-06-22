@@ -262,6 +262,7 @@ func ReadWioConfig(path string) (types.Config, error) {
     }
 }
 
+<<<<<<< HEAD
 // Deletes all the files from the directory
 func RemoveContents(dir string) error {
     d, err := os.Open(dir)
@@ -280,4 +281,13 @@ func RemoveContents(dir string) error {
         }
     }
     return nil
+=======
+func Contains(slice []string, value string) bool {
+    for _, element := range slice {
+        if element == value {
+            return true
+        }
+    }
+    return false
+>>>>>>> Refactoring package creation
 }
