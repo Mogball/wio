@@ -9,22 +9,37 @@ package run
 import (
     "bufio"
     goerr "errors"
+    "fmt"
     "github.com/fatih/color"
+    "github.com/mattn/go-colorable"
     "github.com/urfave/cli"
     "os"
     "os/exec"
     "strings"
-    "wio/cmd/wio/commands/run/cmake"
-    "wio/cmd/wio/commands/run/dependencies"
     "wio/cmd/wio/config"
+    "wio/cmd/wio/constants"
     "wio/cmd/wio/errors"
     "wio/cmd/wio/log"
     "wio/cmd/wio/toolchain"
     "wio/cmd/wio/types"
     "wio/cmd/wio/utils"
     "wio/cmd/wio/utils/io"
-    "wio/cmd/wio/constants"
 )
+
+type TargetBuildInfo struct {
+    TargetName  string
+    ProjectType constants.Type
+
+    Src        string
+    HeaderOnly bool
+    Platform   string
+    Framework  string
+    Board      string
+    Port       string
+
+    Flags       types.TargetFlags
+    Definitions types.TargetDefinitions
+}
 
 type Run struct {
     Context *cli.Context
@@ -47,7 +62,7 @@ func (run Run) Execute() {
     }
 
     targetName := run.Context.String("target")
-    if targetName == config.ProjectDefaults.DefaultTarget {
+    if targetName == config.DefaultTargetDefaults {
         targetName = projectConfig.GetTargets().GetDefaultTarget()
     }
 
@@ -61,28 +76,48 @@ func (run Run) Execute() {
         })
     }
 
+    targetInfo := TargetBuildInfo{}
+
+    // gather target info
+    if projectConfig.Type == constants.APP {
+        targetInfo.HeaderOnly = projectConfig.Config.GetMainTag().GetCompileOptions().IsHeaderOnly()
+        targetInfo.Platform = projectConfig.Config.GetMainTag().GetCompileOptions().GetPlatform()
+        targetInfo.Framework = projectConfig.Config.GetMainTag().GetCompileOptions().GetFramework()
+    } else {
+        targetInfo.HeaderOnly = projectConfig.Config.GetMainTag().GetConfigurations().HeaderOnly
+        targetInfo.Platform = target.GetPlatform()
+        targetInfo.Framework = target.GetFramework()
+    }
+
+    targetInfo.TargetName = targetName
+    targetInfo.ProjectType = projectConfig.Type
+    targetInfo.Board = target.GetBoard()
+    targetInfo.Src = target.GetSrc()
+    targetInfo.Flags = target.GetFlags()
+    targetInfo.Definitions = target.GetDefinitions()
+    targetInfo.Port = "null"
+
     targetDirectory := directory + io.Sep + ".wio" + io.Sep + "build" + io.Sep + "targets" + io.Sep + targetName
 
     // show information about the whole run process
     log.Write(log.INFO, color.New(color.FgYellow), "Platform:             ")
-    log.Writeln(log.NONE, nil, projectConfig.GetMainTag().GetCompileOptions().GetPlatform())
+    log.Writeln(log.NONE, nil, targetInfo.Platform)
     log.Write(log.INFO, color.New(color.FgYellow), "Framework:            ")
-    log.Writeln(log.NONE, nil, target.GetFramework())
+    log.Writeln(log.NONE, nil, targetInfo.Framework)
     log.Write(log.INFO, color.New(color.FgYellow), "Target Name:          ")
-    log.Writeln(log.NONE, nil, targetName)
+    log.Writeln(log.NONE, nil, targetInfo.TargetName)
     log.Write(log.INFO, color.New(color.FgYellow), "Target Source:        ")
-    log.Writeln(log.NONE, nil, directory+io.Sep+target.GetSrc())
+    log.Writeln(log.NONE, nil, directory+io.Sep+targetInfo.Src+"\n")
 
     portToUse := ""
     performUpload := false
 
-    // check if we can perform upload and if we can, choose port
-    if projectConfig.GetMainTag().GetCompileOptions().GetPlatform() == constants.AVR {
-        log.Write(log.INFO, color.New(color.FgYellow), "Board:                ")
-        log.Writeln(log.NONE, nil, target.GetBoard())
-
-        // select port if upload is triggered as well
-        if run.Context.Bool("upload") {
+    // select port if upload is triggered
+    if run.Context.Bool("upload") {
+        // check if we can perform upload and if we can, choose port
+        if target.GetPlatform() == constants.ATMELAVR {
+            log.Write(log.INFO, color.New(color.FgYellow), "Board:                ")
+            log.Writeln(log.NONE, nil, target.GetBoard())
             performUpload = true
             if !run.Context.IsSet("port") {
                 if ports, err := toolchain.GetPorts(); err != nil {
@@ -95,25 +130,23 @@ func (run Run) Execute() {
                     } else {
                         log.Write(log.INFO, color.New(color.FgYellow), "Port (Auto):          ")
                         log.Writeln(log.NONE, nil, port.Port+"\n")
-                        portToUse = port.Port
+                        targetInfo.Port = port.Port
                     }
                 }
             } else {
-                portToUse = run.Context.String("port")
+                targetInfo.Port = run.Context.String("port")
 
                 log.Write(log.INFO, color.New(color.FgYellow), "Port (Manual):        ")
                 log.Writeln(log.NONE, nil, portToUse+"\n")
             }
         } else {
-            log.Writeln(log.NONE, nil, "")
+            log.Writeln(log.NONE, nil, "\n")
+            log.WriteErrorln(errors.ActionNotSupportedByPlatform{
+                Platform:    target.GetPlatform(),
+                CommandName: "upload",
+                Err:         goerr.New("skipping upload"),
+            }, true)
         }
-    } else {
-        log.Writeln(log.NONE, nil, "\n")
-        log.WriteErrorln(errors.ActionNotSupportedByPlatform{
-            Platform:    projectConfig.GetMainTag().GetCompileOptions().GetPlatform(),
-            CommandName: "upload",
-            Err:         goerr.New("skipping upload"),
-        }, true)
     }
 
     /////////////////////////////////////////// Main CMakeLists ///////////////////////////////////////
@@ -124,10 +157,8 @@ func (run Run) Execute() {
     queue := log.GetQueue()
 
     // create CMakeLists.txt file
-    if projectConfig.GetMainTag().GetCompileOptions().GetPlatform() == constants.AVR {
-        if err := cmake.GenerateAvrMainCMakeLists(projectConfig.GetMainTag().GetName(), directory,
-            target.GetBoard(), portToUse, target.GetFramework(),
-            targetName, target.GetSrc(), target.GetFlags(), target.GetDefinitions()); err != nil {
+    if target.GetPlatform() == constants.ATMELAVR {
+        if err := GenerateAtmelAvrMainCMakeLists(projectConfig.GetMainTag().GetName(), directory, targetInfo); err != nil {
             log.Writeln(log.NONE, color.New(color.FgRed), "failure")
             log.PrintQueue(queue, log.TWO_SPACES)
             log.WriteErrorlnExit(err)
@@ -136,8 +167,9 @@ func (run Run) Execute() {
             log.PrintQueue(queue, log.TWO_SPACES)
         }
     } else {
+        log.WriteFailure()
         err = errors.PlatformNotSupportedError{
-            Platform: projectConfig.GetMainTag().GetCompileOptions().GetPlatform(),
+            Platform: target.GetPlatform(),
         }
 
         log.WriteErrorlnExit(err)
@@ -150,10 +182,8 @@ func (run Run) Execute() {
     projectConfig.GetMainTag().GetName()
 
     // scan dependencies and create dependencies.cmake file
-    if err := dependencies.CreateCMakeDependencyTargets(queue, projectConfig.GetMainTag().GetName(), directory,
-        projectConfig.GetType(), target.GetFlags(), target.GetDefinitions(),
-        projectConfig.GetDependencies(), projectConfig.GetMainTag().GetCompileOptions().GetPlatform(),
-        projectConfig.GetMainTag().GetVersion()); err != nil {
+    if err := CreateCMakeDependencyTargets(queue, projectConfig.GetMainTag().GetName(), directory,
+        projectConfig.GetDependencies(), projectConfig.GetMainTag().GetVersion(), targetInfo); err != nil {
         log.Writeln(log.NONE, color.New(color.FgRed), "failure")
         log.PrintQueue(queue, log.TWO_SPACES)
         log.WriteErrorlnExit(err)
@@ -188,7 +218,7 @@ func (run Run) Execute() {
     }
 
     log.Write(log.INFO, color.New(color.FgCyan), "generating building files for \"%s\" ... ", targetName)
-    log.Writeln(log.NONE, nil, "")
+    log.Writeln(log.VERB, nil, "")
 
     // build targets cmake
     if err := buildTargetCmake(targetDirectory); err != nil {
@@ -253,7 +283,7 @@ func buildTargetCmake(buildDirectory string) error {
         for cmakeStderrScanner.Scan() {
             line := cmakeStderrScanner.Text()
 
-            if strings.Contains(cmakeWarning, line) {
+            if strings.Contains(line, "CMake Deprecation Warning") || strings.Contains(cmakeWarning, line) {
                 continue
             } else {
                 log.Writeln(log.ERR, color.New(color.FgRed), line)
@@ -316,9 +346,11 @@ func buildTargetMake(buildDirectory string) error {
             if strings.Contains(makeStdoutScanner.Text(), "Scanning dependencies") {
                 log.Writeln(log.INFO, color.New(color.FgGreen), makeStdoutScanner.Text())
             } else if strings.Contains(makeStdoutScanner.Text(), "Built target") {
-                log.Writeln(log.INFO, color.New(color.FgGreen), makeStdoutScanner.Text())
+                log.Write(log.INFO, " ")
+                log.Cyan.Fprintln(colorable.NewColorableStdout(), makeStdoutScanner.Text())
             } else {
-                log.Writeln(log.INFO, color.New(color.Reset), makeStdoutScanner.Text())
+                log.Write(log.INFO, " ")
+                fmt.Fprintln(os.Stdout, makeStdoutScanner.Text())
             }
         }
     }()
@@ -326,7 +358,8 @@ func buildTargetMake(buildDirectory string) error {
     makeStderrScanner := bufio.NewScanner(makeStderrReader)
     go func() {
         for makeStderrScanner.Scan() {
-            log.Writeln(log.ERR, color.New(color.FgRed), makeStderrScanner.Text())
+            log.Write(log.ERR, " ")
+            log.Red.Fprintln(colorable.NewColorableStderr(), makeStderrScanner.Text())
         }
     }()
 

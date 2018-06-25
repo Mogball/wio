@@ -1,4 +1,4 @@
-package dependencies
+package run
 
 import (
     goerr "errors"
@@ -6,7 +6,6 @@ import (
     "sort"
     "strconv"
     "strings"
-    "wio/cmd/wio/commands/run/cmake"
     "wio/cmd/wio/errors"
     "wio/cmd/wio/log"
     "wio/cmd/wio/types"
@@ -233,7 +232,7 @@ func CreateCMakeTargets(queue *log.Queue, parentTargetName string, parentTargetH
 
     if val, exists := cmakeTargets[hash]; exists {
         linkVisibility = linkVisibilityVerify(queue, parentTargetName, val.TargetName, linkVisibility, parentTargetHeaderOnly)
-        cmakeTargetsLink = append(cmakeTargetsLink, cmake.CMakeTargetLink{From: parentTargetName, To: val.TargetName, LinkVisibility: linkVisibility})
+        cmakeTargetsLink = append(cmakeTargetsLink, CMakeTargetLink{From: parentTargetName, To: val.TargetName, LinkVisibility: linkVisibility})
     } else {
         dependencyNameToUse := dependencyTargetName
         counter := 2
@@ -256,21 +255,21 @@ func CreateCMakeTargets(queue *log.Queue, parentTargetName string, parentTargetH
         // verify linker visibility
         linkVisibility = linkVisibilityVerify(queue, parentTargetName, dependencyNameToUse, linkVisibility, parentTargetHeaderOnly)
 
-        cmakeTargets[hash] = &cmake.CMakeTarget{TargetName: dependencyNameToUse,
+        cmakeTargets[hash] = &CMakeTarget{TargetName: dependencyNameToUse,
             Path: dependencyTarget.Directory, Flags: allFlags, Definitions: allDefinitions,
-            HeaderOnly: dependencyTarget.MainTag.CompileOptions.HeaderOnly}
+            HeaderOnly: dependencyTarget.MainTag.Config.HeaderOnly}
 
-        cmakeTargetsLink = append(cmakeTargetsLink, cmake.CMakeTargetLink{From: parentTargetName, To: dependencyNameToUse,
+        cmakeTargetsLink = append(cmakeTargetsLink, CMakeTargetLink{From: parentTargetName, To: dependencyNameToUse,
             LinkVisibility: linkVisibility})
 
         cmakeTargetNames[dependencyNameToUse] = true
     }
 
     cmakeTargets[hash].FlagsVisibility = flagsDefinitionsVisibility(queue, dependencyNameToUseForLogs,
-        dependencyTarget.MainTag.Flags.Visibility, dependencyTarget.MainTag.CompileOptions.HeaderOnly)
+        dependencyTarget.MainTag.Flags.Visibility, dependencyTarget.MainTag.Config.HeaderOnly)
 
     cmakeTargets[hash].DefinitionsVisibility = flagsDefinitionsVisibility(queue, dependencyNameToUseForLogs,
-        dependencyTarget.MainTag.Definitions.Visibility, dependencyTarget.MainTag.CompileOptions.HeaderOnly)
+        dependencyTarget.MainTag.Definitions.Visibility, dependencyTarget.MainTag.Config.HeaderOnly)
 
     return dependencyTargetRequiredFlags, dependencyTargetRequiredDefinitions, nil
 }

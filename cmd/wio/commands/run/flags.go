@@ -1,4 +1,4 @@
-package dependencies
+package run
 
 import (
     "regexp"

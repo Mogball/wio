@@ -1,23 +1,25 @@
 package config
 
-type avrDefaults struct {
-    Ide           string
-    Framework     string
-    Port          string
-    AVRBoard      string
-    Baud          int
-    DefaultTarget string
-    AppTargetName string
-    PkgTargetName string
+import "wio/cmd/wio/constants"
+
+var IdeDefault = "none"
+var PackageAllPlatform = "native"
+var PackageAllFramework = "c++"
+var PackageAllBoard = "null"
+var DefaultTargetDefaults = "default"
+var PortDefaults = "9600"
+var BaudRateDefaults = 9600
+
+var FrameworkDefaults = map[string]string{
+    "atmelavr": "cosa",
+    "native":   "c++",
 }
 
-var ProjectDefaults = avrDefaults{
-    Ide:           "none",
-    Framework:     "cosa",
-    Port:          "none",
-    AVRBoard:      "uno",
-    Baud:          9600,
-    DefaultTarget: "default",
-    AppTargetName: "main",
-    PkgTargetName: "tests",
+var BoardDefaults = map[string]string{
+    "atmelavr": "uno",
+}
+
+var TargetSourceDefault = map[constants.Type]string{
+    constants.APP: "src",
+    constants.PKG: "tests",
 }

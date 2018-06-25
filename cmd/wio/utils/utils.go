@@ -9,11 +9,12 @@ import (
     "regexp"
 
     goerr "errors"
+    "strings"
+    "wio/cmd/wio/constants"
     "wio/cmd/wio/errors"
     "wio/cmd/wio/log"
     "wio/cmd/wio/types"
     wio "wio/cmd/wio/utils/io"
-    "strings"
 )
 
 // Checks if path exists and returns true and false based on that
@@ -246,7 +247,7 @@ func ReadWioConfig(path string) (*types.Config, error) {
             return nil, configError
         }
 
-        return &types.Config{Config: pkgConfig, Type: types.Pkg}, nil
+        return &types.Config{Config: pkgConfig, Type: constants.PKG}, nil
     } else {
         appConfig := &types.AppConfig{}
 
@@ -259,7 +260,7 @@ func ReadWioConfig(path string) (*types.Config, error) {
             return nil, configError
         }
 
-        return &types.Config{Config: appConfig, Type: types.App}, nil
+        return &types.Config{Config: appConfig, Type: constants.APP}, nil
     }
 }
 

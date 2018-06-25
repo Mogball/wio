@@ -206,7 +206,8 @@ func write(logType Type, providedColor *color.Color, message string, a ...interf
 
     outStream := logOut
     if logType == WARN || logType == ERR {
-        logTypeColors[logType].Fprintf(logOut, "%s ", logTypeTags[logType])
+        logTypeColors[logType].Fprintf(logOut, "%s", logTypeTags[logType])
+        Default.Fprintf(logOut, " ")
         outStream = logErr
     }
     providedColor.Fprintf(outStream, "%s", str)

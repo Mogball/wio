@@ -1,6 +1,8 @@
 package constants
 
+type Type string
+
 const (
-    APP = "app"
-    PKG = "pkg"
+    APP Type = "app"
+    PKG Type = "pkg"
 )

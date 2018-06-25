@@ -17,28 +17,23 @@ import (
     "wio/cmd/wio/commands/pac"
     "wio/cmd/wio/commands/run"
     "wio/cmd/wio/config"
+    "wio/cmd/wio/constants"
+    "wio/cmd/wio/errors"
     "wio/cmd/wio/log"
     "wio/cmd/wio/utils/io"
-    "wio/cmd/wio/errors"
 )
 
 var packageFlags = []cli.Flag{
     cli.StringFlag{
         Name:  "platform",
-        Usage: "Target platform: 'AVR', 'Native', or 'all'",
-        Value: "all",
-    },
-    cli.StringFlag{
-        Name:  "framework",
-        Usage: "Target framework: 'Arduino', 'Cosa', or 'all'",
+        Usage: "Target platform: 'atmleavr', 'native', or 'all'",
         Value: "all",
     },
     cli.StringFlag{
         Name:  "board",
-        Usage: "Target boards: e.g. 'uno', 'mega2560', or 'all'",
+        Usage: "Target boards: e.g. 'atmelavr:uno', 'atmelavr:mega2560', or 'all'",
         Value: "all",
     },
-
     cli.BoolFlag{
         Name:  "only-config",
         Usage: "Creates only the configuration file (wio.yml).",
@@ -117,13 +112,13 @@ func main() {
                     UsageText: "wio create app [command options]",
                     Subcommands: cli.Commands{
                         cli.Command{
-                            Name:      "avr",
-                            Usage:     "Creates an AVR application.",
-                            UsageText: "wio create app avr [directory] [board] [command options]",
+                            Name:      "atmelavr",
+                            Usage:     "Creates an Atmel AVR application.",
+                            UsageText: "wio create app atmelavr [directory] [board] [command options]",
                             Flags: []cli.Flag{
                                 cli.StringFlag{Name: "framework",
                                     Usage: "Framework being used for this project. Framework contains the core libraries.",
-                                    Value: config.ProjectDefaults.Framework},
+                                    Value: config.FrameworkDefaults[constants.ATMELAVR]},
                                 cli.BoolFlag{Name: "create-example",
                                     Usage: "This will create an example project that user can build and upload."},
                                 cli.BoolFlag{Name: "only-config",
@@ -169,7 +164,7 @@ func main() {
             Flags: []cli.Flag{
                 cli.StringFlag{Name: "target",
                     Usage: "Builds, Runs and/or uploads a specified target instead of the main/default target.",
-                    Value: config.ProjectDefaults.DefaultTarget,
+                    Value: config.DefaultTargetDefaults,
                 },
                 cli.BoolFlag{Name: "clean",
                     Usage: "Clean the project build files before new build is triggered.",
@@ -179,7 +174,7 @@ func main() {
                 },
                 cli.StringFlag{Name: "port",
                     Usage: "Port to upload the project to, (default: automatically select).",
-                    Value: config.ProjectDefaults.Port,
+                    Value: config.PortDefaults,
                 },
                 cli.BoolFlag{Name: "build-all",
                     Usage: "Build all the targets specified in wio.yml file.",
@@ -207,10 +202,10 @@ func main() {
                     Flags: []cli.Flag{
                         cli.IntFlag{Name: "baud",
                             Usage: "Baud rate for the Serial port.",
-                            Value: config.ProjectDefaults.Baud},
+                            Value: config.BaudRateDefaults},
                         cli.StringFlag{Name: "port",
                             Usage: "Serial Port to open.",
-                            Value: config.ProjectDefaults.Port},
+                            Value: config.PortDefaults},
                         cli.BoolFlag{Name: "gui",
                             Usage: "Runs the GUI version of the serial monitor tool"},
                         cli.BoolFlag{Name: "disable-warnings",
@@ -558,6 +553,7 @@ func main() {
                 Log: r,
             }
 
+            log.Writeln(log.NONE, "")
             log.WriteErrorlnExit(fatalError)
         }
     }()

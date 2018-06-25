@@ -1,4 +1,4 @@
-package dependencies
+package run
 
 import (
     goerr "errors"
@@ -7,13 +7,12 @@ import (
     "os"
     "path/filepath"
     "strings"
-    "wio/cmd/wio/commands/run/cmake"
+    "wio/cmd/wio/constants"
     "wio/cmd/wio/errors"
     "wio/cmd/wio/log"
     "wio/cmd/wio/types"
     "wio/cmd/wio/utils"
     "wio/cmd/wio/utils/io"
-    "wio/cmd/wio/constants"
 )
 
 const (
@@ -22,10 +21,10 @@ const (
     PKG_REMOTE_NAME = "pkg_module"
 )
 
-var packageVersions = map[string]string{}          /* Keeps track of versions for the packages */
-var cmakeTargets = map[string]*cmake.CMakeTarget{} /* CMake Target that will be built */
-var cmakeTargetsLink []cmake.CMakeTargetLink       /* CMake Target to Link to and from */
-var cmakeTargetNames = map[string]bool{}           /* CMake Target Names. Used to check for unique names */
+var packageVersions = map[string]string{}    /* Keeps track of versions for the packages */
+var cmakeTargets = map[string]*CMakeTarget{} /* CMake Target that will be built */
+var cmakeTargetsLink []CMakeTargetLink       /* CMake Target to Link to and from */
+var cmakeTargetNames = map[string]bool{}     /* CMake Target Names. Used to check for unique names */
 
 // Stores information about every package that is scanned
 type DependencyScanStructure struct {
@@ -72,7 +71,7 @@ func recursiveDependencyScan(queue *log.Queue, currDirectory string,
     dependencies map[string]*DependencyScanStructure, packageDependencies types.DependenciesTag) error {
     // if directory does not exist, do not do anything
     if !utils.PathExists(currDirectory) {
-        log.QueueWriteln(queue, log.VERB, nil, "% does not exist, skipping", currDirectory)
+        log.QueueWriteln(queue, log.VERB, nil, "%s does not exist, skipping", currDirectory)
         return nil
     }
 
@@ -138,7 +137,7 @@ func recursiveDependencyScan(queue *log.Queue, currDirectory string,
             }
         }
     } else {
-        log.QueueWriteln(queue, log.VERB, nil, "% does not have any package, skipping", currDirectory)
+        log.QueueWriteln(queue, log.VERB, nil, "%s does not have any package, skipping", currDirectory)
     }
 
     return nil
@@ -177,15 +176,14 @@ func convertPkgToDependency(packageDependencyPath string, projectName string, pr
     return nil
 }
 
-func CreateCMakeDependencyTargets(queue *log.Queue, projectName string, projectDirectory string, projectType string,
-    projectFlags types.TargetFlags, projectDefinitions types.TargetDefinitions, projectDependencies types.DependenciesTag,
-    platform string, pkgVersion string) error {
+func CreateCMakeDependencyTargets(queue *log.Queue, projectName string, projectDirectory string,
+    projectDependencies types.DependenciesTag, pkgVersion string, targetInfo TargetBuildInfo) error {
     remotePackagesPath := projectDirectory + io.Sep + ".wio" + io.Sep + REMOTE_NAME
     vendorPackagesPath := projectDirectory + io.Sep + VENDOR_NAME
 
     scannedDependencies := map[string]*DependencyScanStructure{}
 
-    if projectType == constants.PKG {
+    if targetInfo.ProjectType == constants.PKG {
         if projectDependencies == nil {
             projectDependencies = types.DependenciesTag{}
         }
@@ -193,8 +191,8 @@ func CreateCMakeDependencyTargets(queue *log.Queue, projectName string, projectD
         // convert pkg project into tests dependency
         projectDependencies[projectName] = &types.DependencyTag{
             Version:        pkgVersion,
-            Flags:          projectFlags.GetPkgFlags(),
-            Definitions:    projectDefinitions.GetPkgDefinitions(),
+            Flags:          targetInfo.Flags.GetPkgFlags(),
+            Definitions:    targetInfo.Definitions.GetPkgDefinitions(),
             LinkVisibility: "PRIVATE",
         }
 
@@ -275,8 +273,8 @@ func CreateCMakeDependencyTargets(queue *log.Queue, projectName string, projectD
         subQueue := log.GetQueue()
 
         requiredFlags, requiredDefinitions, err := CreateCMakeTargets(subQueue, parentTarget, false,
-            dependencyNameToUseForLogs, dependencyTargetName, dependencyTarget, projectFlags.GetGlobalFlags(),
-            projectDefinitions.GetGlobalDefinitions(), projectDependency, projectDependency)
+            dependencyNameToUseForLogs, dependencyTargetName, dependencyTarget, targetInfo.Flags.GetGlobalFlags(),
+            targetInfo.Definitions.GetGlobalDefinitions(), projectDependency, projectDependency)
         if err != nil {
             log.QueueWriteln(queue, log.VERB_NONE, color.New(color.FgRed), "failure")
             log.CopyQueue(subQueue, queue, log.TWO_SPACES)
@@ -289,10 +287,9 @@ func CreateCMakeDependencyTargets(queue *log.Queue, projectName string, projectD
         log.QueueWrite(queue, log.VERB, nil, "recursively creating cmake targets for %s dependencies ... ", dependencyNameToUseForLogs)
         subQueue = log.GetQueue()
 
-        if err := recursivelyGoThroughTransDependencies(subQueue, dependencyTargetName,
-            dependencyTarget.MainTag.GetCompileOptions().IsHeaderOnly(), scannedDependencies,
-            dependencyTarget.Dependencies, projectFlags.GetGlobalFlags(), requiredFlags,
-            projectDefinitions.GetGlobalDefinitions(), requiredDefinitions,
+        if err := recursivelyGoThroughTransDependencies(subQueue, dependencyTargetName, targetInfo.HeaderOnly,
+            scannedDependencies, dependencyTarget.Dependencies, targetInfo.Flags.GetGlobalFlags(), requiredFlags,
+            targetInfo.Definitions.GetGlobalDefinitions(), requiredDefinitions,
             projectDependency); err != nil {
             log.QueueWriteln(queue, log.VERB_NONE, color.New(color.FgRed), "failure")
             log.CopyQueue(subQueue, queue, log.TWO_SPACES)
@@ -305,13 +302,13 @@ func CreateCMakeDependencyTargets(queue *log.Queue, projectName string, projectD
 
     cmakePath := projectDirectory + io.Sep + ".wio" + io.Sep + "build" + io.Sep + "dependencies.cmake"
 
-    if platform == constants.AVR {
-        avrCmake := cmake.GenerateAvrDependencyCMakeString(cmakeTargets, cmakeTargetsLink)
+    if targetInfo.Platform == constants.ATMELAVR {
+        avrCmake := GenerateAtmelAvrDependencyCMakeString(cmakeTargets, cmakeTargetsLink)
 
         return io.NormalIO.WriteFile(cmakePath, []byte(strings.Join(avrCmake, "\n")))
     } else {
         return errors.PlatformNotSupportedError{
-            Platform: platform,
+            Platform: targetInfo.Platform,
             Err:      goerr.New("platform not valid for cmake target creation"),
         }
     }

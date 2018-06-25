@@ -138,7 +138,7 @@ func (pac Pac) handleInstall(directory string) {
             projectConfig.SetDependencies(dependencies)
 
             log.Write(log.INFO, color.New(color.FgCyan), "saving changes in wio.yml file ... ")
-            if err := projectConfig.PrettyPrint(directory+io.Sep+"wio.yml"); err != nil {
+            if err := projectConfig.PrettyPrint(directory+io.Sep+"wio.yml", false); err != nil {
                 log.Writeln(log.NONE, color.New(color.FgRed), "failure")
                 log.WriteErrorlnExit(errors.WriteFileError{
                     FileName: directory + io.Sep + "wio.yml",
@@ -297,7 +297,7 @@ func (pac Pac) handleUninstall(directory string) {
 
     if dependencyDeleted {
         log.Write(log.INFO, color.New(color.FgCyan), "saving changes in wio.yml file ... ")
-        if err := projectConfig.PrettyPrint(directory+io.Sep+"wio.yml"); err != nil {
+        if err := projectConfig.PrettyPrint(directory+io.Sep+"wio.yml", false); err != nil {
             log.Writeln(log.NONE, color.New(color.FgRed), "failure")
             log.WriteErrorlnExit(errors.WriteFileError{
                 FileName: directory + io.Sep + "wio.yml",
@@ -379,7 +379,7 @@ func (pac Pac) handleCollect(directory string) {
 
     if modified {
         log.Write(log.INFO, color.New(color.FgCyan), "saving changes in wio.yml file ... ")
-        if err := projectConfig.PrettyPrint(directory+io.Sep+"wio.yml"); err != nil {
+        if err := projectConfig.PrettyPrint(directory+io.Sep+"wio.yml", false); err != nil {
             log.Writeln(log.NONE, color.New(color.FgRed), "failure")
             log.WriteErrorlnExit(errors.WriteFileError{
                 FileName: directory + io.Sep + "wio.yml",

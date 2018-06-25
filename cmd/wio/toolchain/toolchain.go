@@ -31,7 +31,7 @@ func GetPySerialCommand(args ...string) (*exec.Cmd, error) {
     if err != nil {
         return nil, err
     }
-    
+
     if operatingSystem == io.LINUX {
         pySerialPath += io.Sep + serialLinux
     } else if operatingSystem == io.DARWIN {
