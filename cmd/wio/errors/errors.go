@@ -480,6 +480,20 @@ func (err TargetDoesNotExistError) Error() string {
     return str
 }
 
+type NoTargetExistsError struct {
+    Err error
+}
+
+func (err NoTargetExistsError) Error() string {
+    str := fmt.Sprintf(`Project has no target to build. Skipping the build`)
+
+    if err.Err != nil {
+        str += fmt.Sprintf("\n%s%s", Spaces, err.Err.Error())
+    }
+
+    return str
+}
+
 type CommandStartError struct {
     CommandName string
     Err         error

@@ -66,6 +66,13 @@ func (run Run) Execute() {
         targetName = projectConfig.GetTargets().GetDefaultTarget()
     }
 
+    if targetName == "null" || (projectConfig.GetTargets().GetTargets() == nil ||
+        len(projectConfig.GetTargets().GetTargets()) == 0) {
+        log.WriteErrorlnExit(errors.NoTargetExistsError{
+            Err: goerr.New("add a target in wio.yml file"),
+        })
+    }
+
     var target types.Target
 
     if val, exists := projectConfig.GetTargets().GetTargets()[targetName]; exists {

@@ -133,16 +133,14 @@ func (create Create) fillPackageConfig(queue *log.Queue, info *createInfo) error
         visibility = "INTERFACE"
     }
 
-    // choose a target. If "all" then native otherwise the first one
-    var targetPlatform string
-    var targetFramework string
-    var targetBoard string
+    var targets types.PkgAVRTargets
 
-    if _, exists := info.Platform["all"]; exists {
-        targetPlatform = config.PackageAllPlatform
-        targetFramework = config.PackageAllFramework
-        targetBoard = config.PackageAllBoard
-    } else {
+    if _, exists := info.Platform["all"]; !exists {
+        var targetPlatform string
+        var targetFramework string
+        var targetBoard string
+
+        // handle boards case where it is all or none
         targetPlatform = info.PlatformNamesSimple[0]
         targetFramework = info.Platform[targetPlatform].Frameworks[0]
 
@@ -155,9 +153,27 @@ func (create Create) fillPackageConfig(queue *log.Queue, info *createInfo) error
                 targetBoard = info.Platform[targetPlatform].Boards[0]
             }
         }
+
+        target := config.DefaultTargetDefaults
+        targets = types.PkgAVRTargets{
+            DefaultTarget: config.DefaultTargetDefaults,
+            Targets: map[string]types.PkgAVRTarget{
+                target: {
+                    Src:       config.TargetSourceDefault[constants.PKG],
+                    Platform:  targetPlatform,
+                    Framework: targetFramework,
+                    Board:     targetBoard,
+                },
+            },
+        }
+    } else {
+        // create an empty target
+        targets = types.PkgAVRTargets{
+            DefaultTarget: "null",
+            Targets:       nil,
+        }
     }
 
-    target := config.DefaultTargetDefaults
     projectConfig := &types.PkgConfig{
         MainTag: types.PkgTag{
             Ide: config.IdeDefault,
@@ -175,17 +191,7 @@ func (create Create) fillPackageConfig(queue *log.Queue, info *createInfo) error
             Flags:       types.Flags{Visibility: visibility},
             Definitions: types.Definitions{Visibility: visibility},
         },
-        TargetsTag: types.PkgAVRTargets{
-            DefaultTarget: target,
-            Targets: map[string]types.PkgAVRTarget{
-                target: {
-                    Src:       config.TargetSourceDefault[constants.PKG],
-                    Platform:  targetPlatform,
-                    Framework: targetFramework,
-                    Board:     targetBoard,
-                },
-            },
-        },
+        TargetsTag: targets,
     }
 
     log.WriteSuccess(queue, log.VERB)
