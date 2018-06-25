@@ -8,14 +8,21 @@ type Create struct {
     error   error
 }
 
+type PlatformInfo struct {
+    Frameworks []string
+    Boards     []string
+}
+
 type createInfo struct {
     Directory string
     Type      string
     Name      string
 
-    Platform  string
-    Framework string
-    Board     string
+    Platform              map[string]*PlatformInfo
+    PlatformNamesSimple   []string
+    PlatformNamesDetailed []string
+    BoardNamesSimple      []string
+    BoardNamesDetailed    []string
 
     ConfigOnly bool
     HeaderOnly bool

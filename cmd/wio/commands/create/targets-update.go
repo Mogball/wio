@@ -6,13 +6,8 @@
 // Helper for create and update command to update targets
 package create
 
-import (
-    "strings"
-    "wio/cmd/wio/config"
-    "wio/cmd/wio/types"
-)
-
 // Updates AVR App Targets to make sure there is atleast one valid target
+/*
 func updateAVRAppTargets(targets *types.AppAVRTargets, directory string) {
     //////////////////////////////////////////// Targets //////////////////////////////////////////////////
     if strings.Trim(targets.DefaultTarget, " ") != "" {
@@ -53,3 +48,4 @@ func updateAVRAppTargets(targets *types.AppAVRTargets, directory string) {
         }
     }
 }
+*/

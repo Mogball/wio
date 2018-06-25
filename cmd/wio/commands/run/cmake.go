@@ -1,14 +1,13 @@
-package cmake
+package run
 
 import (
+    "os"
     "path/filepath"
     "strings"
-    "wio/cmd/wio/types"
-    "wio/cmd/wio/utils/io"
-    "wio/cmd/wio/utils"
-    "os"
     "wio/cmd/wio/constants"
     "wio/cmd/wio/errors"
+    "wio/cmd/wio/utils"
+    "wio/cmd/wio/utils/io"
 )
 
 // CMake Target information
@@ -30,14 +29,14 @@ type CMakeTargetLink struct {
 }
 
 // This creates CMake library string that will be used to link libraries
-func GenerateAvrDependencyCMakeString(targets map[string]*CMakeTarget, links []CMakeTargetLink) []string {
+func GenerateAtmelAvrDependencyCMakeString(targets map[string]*CMakeTarget, links []CMakeTargetLink) []string {
     cmakeStrings := make([]string, 0)
 
     for _, target := range targets {
-        finalString := avrNonHeaderOnlyString
+        finalString := atmelavrNonHeaderOnlyString
 
         if target.HeaderOnly {
-            finalString = avrHeaderOnlyString
+            finalString = atmelavrHeaderOnlyString
         }
 
         finalString = strings.Replace(finalString, "{{DEPENDENCY_NAME}}", target.TargetName, -1)
@@ -68,8 +67,7 @@ func GenerateAvrDependencyCMakeString(targets map[string]*CMakeTarget, links []C
 }
 
 // THis Creates the main CMakeLists.txt file for AVR app type project
-func GenerateAvrMainCMakeLists(appName string, appPath string, board string, port string, framework string,
-    targetName string, targetPath string, flags types.TargetFlags, definitions types.TargetDefinitions) error {
+func GenerateAtmelAvrMainCMakeLists(appName string, appPath string, targetInfo TargetBuildInfo) error {
 
     executablePath, err := io.NormalIO.GetRoot()
     if err != nil {
@@ -77,17 +75,17 @@ func GenerateAvrMainCMakeLists(appName string, appPath string, board string, por
     }
 
     var toolChainPath string
-    if framework == constants.COSA {
+    if targetInfo.Framework == constants.COSA {
         toolChainPath = "toolchain/cmake/CosaToolchain.cmake"
     } else {
         return errors.FrameworkNotSupportedError{
-            Platform: constants.AVR,
-            Framework: framework,
+            Platform:  constants.ATMELAVR,
+            Framework: targetInfo.Framework,
         }
     }
 
     // read the CMakeLists.txt file template
-    templateData, err := io.AssetIO.ReadFile("templates/cmake/CMakeListsAVR.txt.tpl")
+    templateData, err := io.AssetIO.ReadFile("templates/cmake/CMakeListsAtmelAVR.txt.tpl")
     if err != nil {
         return err
     }
@@ -98,19 +96,19 @@ func GenerateAvrMainCMakeLists(appName string, appPath string, board string, por
         filepath.ToSlash(toolChainPath), -1)
     templateDataStr = strings.Replace(templateDataStr, "{{PROJECT_PATH}}", filepath.ToSlash(appPath), -1)
     templateDataStr = strings.Replace(templateDataStr, "{{PROJECT_NAME}}", appName, -1)
-    templateDataStr = strings.Replace(templateDataStr, "{{TARGET_NAME}}", targetName, -1)
-    templateDataStr = strings.Replace(templateDataStr, "{{BOARD}}", board, -1)
-    templateDataStr = strings.Replace(templateDataStr, "{{PORT}}", port, -1)
-    templateDataStr = strings.Replace(templateDataStr, "{{FRAMEWORK}}", strings.Title(framework), -1)
-    templateDataStr = strings.Replace(templateDataStr, "{{ENTRY}}", targetPath, 1)
+    templateDataStr = strings.Replace(templateDataStr, "{{TARGET_NAME}}", targetInfo.TargetName, -1)
+    templateDataStr = strings.Replace(templateDataStr, "{{BOARD}}", targetInfo.Board, -1)
+    templateDataStr = strings.Replace(templateDataStr, "{{PORT}}", targetInfo.Port, -1)
+    templateDataStr = strings.Replace(templateDataStr, "{{FRAMEWORK}}", strings.Title(targetInfo.Framework), -1)
+    templateDataStr = strings.Replace(templateDataStr, "{{ENTRY}}", targetInfo.Src, 1)
     templateDataStr = strings.Replace(templateDataStr, "{{TARGET_COMPILE_FLAGS}}",
-        strings.Join(flags.GetTargetFlags(), " "), -1)
+        strings.Join(targetInfo.Flags.GetTargetFlags(), " "), -1)
     templateDataStr = strings.Replace(templateDataStr, "{{TARGET_COMPILE_DEFINITIONS}}",
-        strings.Join(definitions.GetTargetDefinitions(), " "), -1)
+        strings.Join(targetInfo.Definitions.GetTargetDefinitions(), " "), -1)
 
-    if !utils.PathExists(appPath+io.Sep+".wio"+io.Sep+"build") {
+    if !utils.PathExists(appPath + io.Sep + ".wio" + io.Sep + "build") {
         err := os.MkdirAll(appPath+io.Sep+".wio"+io.Sep+"build", os.ModePerm)
-        if err!= nil {
+        if err != nil {
             return err
         }
     }

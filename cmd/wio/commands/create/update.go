@@ -1,15 +1,15 @@
 package create
 
 import (
-    "wio/cmd/wio/types"
-    "wio/cmd/wio/constants"
-    "wio/cmd/wio/log"
     "github.com/fatih/color"
+    "path/filepath"
+    "strings"
+    "wio/cmd/wio/constants"
+    "wio/cmd/wio/errors"
+    "wio/cmd/wio/log"
+    "wio/cmd/wio/types"
     "wio/cmd/wio/utils"
     "wio/cmd/wio/utils/io"
-    "strings"
-    "wio/cmd/wio/errors"
-    "path/filepath"
 )
 
 func (create Create) updateApp(directory string, config *types.AppConfig) error {
@@ -19,7 +19,7 @@ func (create Create) updateApp(directory string, config *types.AppConfig) error 
 func (create Create) updatePackage(directory string, config *types.PkgConfig) error {
     info := &createInfo{
         Directory: directory,
-        Type:      constants.PKG,
+        Type:      string(constants.PKG),
         Name:      config.MainTag.GetName(),
     }
 
@@ -63,7 +63,7 @@ func (create Create) handleUpdate(directory string) error {
         return err
     }
     switch cfg.Type {
-    case types.App:
+    case constants.APP:
         err = create.updateApp(directory, cfg.Config.(*types.AppConfig))
         break
     default:
@@ -81,7 +81,7 @@ func updatePackageConfig(queue *log.Queue, config *types.PkgConfig, info *create
     if config.MainTag.GetName() != filepath.Base(info.Directory) {
         log.Warnln(queue, "Base directory different from project name")
     }
-    if config.MainTag.CompileOptions.HeaderOnly {
+    if config.MainTag.Config.HeaderOnly {
         config.MainTag.Flags.Visibility = "INTERFACE"
         config.MainTag.Definitions.Visibility = "INTERFACE"
     } else {
@@ -92,7 +92,7 @@ func updatePackageConfig(queue *log.Queue, config *types.PkgConfig, info *create
         config.MainTag.Meta.Version = "0.0.1"
     }
     configPath := info.Directory + io.Sep + "wio.yml"
-    return config.PrettyPrint(configPath)
+    return config.PrettyPrint(configPath, false)
 }
 
 /*// Update wio.yml file
@@ -175,7 +175,7 @@ func (create Create) updateConfig(queue *log.Queue, projectConfig types.Config, 
 func (create Create) updateProjectFiles(queue *log.Queue, info *createInfo) error {
     log.Verb(queue, "reading paths.json file ... ")
     structureData := &StructureConfigData{}
-    if err := io.AssetIO.ParseJson("configurations/structure-avr.json", structureData); err != nil {
+    if err := io.AssetIO.ParseJson("configurations/structure-atmelavr.json", structureData); err != nil {
         log.WriteFailure(queue, log.VERB)
         return err
     } else {

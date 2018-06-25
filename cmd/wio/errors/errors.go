@@ -13,7 +13,6 @@ const (
     Spaces = "         "
 )
 
-
 type Generic struct {
     message string
 }
@@ -472,7 +471,21 @@ type TargetDoesNotExistError struct {
 }
 
 func (err TargetDoesNotExistError) Error() string {
-    str := fmt.Sprintf(`"%s" target does not exist. Skipping the build`, err.TargetName)
+    str := fmt.Sprintf(`"%s" target does not exist. kipping the build`, err.TargetName)
+
+    if err.Err != nil {
+        str += fmt.Sprintf("\n%s%s", Spaces, err.Err.Error())
+    }
+
+    return str
+}
+
+type NoTargetExistsError struct {
+    Err error
+}
+
+func (err NoTargetExistsError) Error() string {
+    str := fmt.Sprintf(`Project has no target to build. Skipping the build`)
 
     if err.Err != nil {
         str += fmt.Sprintf("\n%s%s", Spaces, err.Err.Error())

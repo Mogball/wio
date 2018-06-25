@@ -3,8 +3,8 @@
 // ../../../../assets/cli-helper/app-help.txt
 // ../../../../assets/cli-helper/command-help.txt
 // ../../../../assets/cli-helper/subcommand-help.txt
-// ../../../../assets/configurations/structure-avr.json
-// ../../../../assets/templates/cmake/CMakeListsAVR.txt.tpl
+// ../../../../assets/configurations/structure-atmelavr.json
+// ../../../../assets/templates/cmake/CMakeListsAtmelAVR.txt.tpl
 // ../../../../assets/templates/cmake/CMakeListsNative.txt.tpl
 // ../../../../assets/templates/config/app-helper.txt
 // ../../../../assets/templates/config/dependencies-helper.txt
@@ -29,624 +29,624 @@
 package io
 
 import (
-	"bytes"
-	"compress/gzip"
-	"fmt"
-	"io"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
+    "bytes"
+    "compress/gzip"
+    "fmt"
+    "io"
+    "io/ioutil"
+    "os"
+    "path/filepath"
+    "strings"
+    "time"
 )
 
 func bindataRead(data, name string) ([]byte, error) {
-	gz, err := gzip.NewReader(strings.NewReader(data))
-	if err != nil {
-		return nil, fmt.Errorf("Read %q: %v", name, err)
-	}
+    gz, err := gzip.NewReader(strings.NewReader(data))
+    if err != nil {
+        return nil, fmt.Errorf("Read %q: %v", name, err)
+    }
 
-	var buf bytes.Buffer
-	_, err = io.Copy(&buf, gz)
-	clErr := gz.Close()
+    var buf bytes.Buffer
+    _, err = io.Copy(&buf, gz)
+    clErr := gz.Close()
 
-	if err != nil {
-		return nil, fmt.Errorf("Read %q: %v", name, err)
-	}
-	if clErr != nil {
-		return nil, err
-	}
+    if err != nil {
+        return nil, fmt.Errorf("Read %q: %v", name, err)
+    }
+    if clErr != nil {
+        return nil, err
+    }
 
-	return buf.Bytes(), nil
+    return buf.Bytes(), nil
 }
 
 type asset struct {
-	bytes []byte
-	info  os.FileInfo
+    bytes []byte
+    info  os.FileInfo
 }
 
 type bindataFileInfo struct {
-	name    string
-	size    int64
-	mode    os.FileMode
-	modTime time.Time
+    name    string
+    size    int64
+    mode    os.FileMode
+    modTime time.Time
 }
 
 func (fi bindataFileInfo) Name() string {
-	return fi.name
+    return fi.name
 }
 func (fi bindataFileInfo) Size() int64 {
-	return fi.size
+    return fi.size
 }
 func (fi bindataFileInfo) Mode() os.FileMode {
-	return fi.mode
+    return fi.mode
 }
 func (fi bindataFileInfo) ModTime() time.Time {
-	return fi.modTime
+    return fi.modTime
 }
 func (fi bindataFileInfo) IsDir() bool {
-	return false
+    return false
 }
 func (fi bindataFileInfo) Sys() interface{} {
-	return nil
+    return nil
 }
 
 var _assetsCliHelperAppHelpTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x7c\x54\x4f\x4f\xdb\x30\x14\xbf\xe7\x53\xfc\x14\x71\x2c\xf9\x00\x15\x43\xea\x90\x36\x76\xd9\x01\x09\x76\x28\xd3\xea\xc6\x2f\xa9\xc1\x79\xb6\x6c\x07\x86\x22\x7f\xf7\xc9\x4e\x42\x49\x8b\xd6\xd3\x73\xdf\xfb\xfd\x7b\x4e\xf2\x4b\x19\x28\x0f\xc1\x30\x96\x18\xde\xf4\xae\x26\x28\x13\x20\xe9\x85\xb4\xb1\x1d\x71\x00\xf1\x8b\x72\x86\x53\x5d\xdc\x38\x12\x81\x56\xf8\xda\x2b\x2d\x57\x10\x2c\x71\x6f\xb5\x11\x12\x9b\x87\x3b\x58\x67\x9e\xa8\x0e\x1e\x8d\x33\x1d\x6e\x4c\xd7\x09\x96\x5a\x31\x55\x45\x91\x4e\x86\xe7\x3f\xfd\xba\x28\x00\xe0\x55\x19\xd4\x99\x13\x57\x13\xfa\x4f\x78\xb3\x74\x8d\xad\xb1\x41\x19\xf6\xbf\xf3\x5c\xfa\x8d\xda\x10\x60\x7a\x45\xb2\x3e\x01\xf0\x7a\x20\x77\x86\x57\x1e\x3b\x61\xed\x0e\xc6\x61\x67\x9f\xdb\xdd\x51\xd0\xf5\xfc\x09\x7d\x8e\x84\x70\xa0\x05\xf7\x5e\x78\x92\x30\x0c\xa1\x75\x6e\xd6\x86\x1b\xd5\xf6\x4e\x64\x38\x24\x35\x8a\x49\x2e\xc9\x2f\x2f\xfb\x71\x29\xe7\x2a\xd3\xb6\x4e\x65\x82\x49\xb7\x20\x42\x10\xf5\x81\x24\xa8\xdb\x93\x94\x24\xd3\x3d\xa8\x9a\x8e\xec\x8a\x7d\x48\x4e\xce\x89\x7f\x8c\x1d\x9f\xc7\xac\xa8\x9f\x45\x4b\x1e\x22\x39\xb4\xc4\x92\xb8\x56\xe4\x8b\xe2\xde\x8b\x96\xd6\x18\x86\xea\x96\xb4\xfd\x29\x3a\x8a\x11\xc3\xa0\x1a\x54\x0f\xca\xab\xbd\xa6\x6f\x5a\xb4\x3e\xc6\x6d\xab\xcd\x5e\x68\xcc\x42\xc3\x40\x2c\x63\x1c\x47\xe7\x5b\x8c\x11\xf5\x58\x62\x3b\x17\x27\x80\x89\x7c\xe3\x5a\x9f\xb5\x13\xc5\xf2\x44\xda\x53\x8c\x5b\xe1\xda\x3e\x3d\x63\xbe\xaa\xaa\x19\x9c\xd2\x65\xbc\x26\x46\xb5\xe9\xc3\xc1\x38\x1f\x63\xf1\x7d\xe1\x6d\x3d\x8e\x39\xc1\x2d\x9d\xc6\x18\x86\x6a\xa6\x99\xfc\x2f\x62\xd8\x37\xa7\xda\x43\x40\x8c\xc5\xe6\x45\x28\x2d\xf6\x9a\xe6\x48\x7e\x5d\xbc\x93\x1e\x03\x67\x24\x9b\x80\xea\x56\x49\x4a\x4b\x8c\x31\xd3\x3f\x19\xc5\xa8\xd2\x46\x3d\xca\x15\xca\x34\x8a\xf2\x31\xe4\xa2\x7a\x4f\x8b\xf2\x91\x4b\x7c\x30\x72\x6e\x6b\x99\xe0\x7f\x61\x2f\x14\x4b\xfa\xbb\xc2\xc5\xd8\xc4\xfa\xcb\x79\x7e\xd5\x4c\x63\x27\x7b\x98\x30\x9f\x5b\x78\xdf\x4c\x8c\xe9\xd5\x9d\x0e\x93\xf6\xa2\xfb\x91\x32\x9b\x27\xe7\x33\x6d\xf1\x40\xde\x29\xc3\x33\xe8\xd8\x38\x42\x8a\xbb\x9e\x51\xe6\x8f\xc0\xf4\xf4\x5c\x1d\x48\xdb\xeb\x12\x8d\x71\xe8\x8c\x23\x28\x6e\x8c\xeb\xf2\xdb\x06\xb1\x37\x7d\x80\x98\x87\xab\xe2\x5f\x00\x00\x00\xff\xff\xae\x9d\x94\xd6\xc1\x04\x00\x00"
 
 func assetsCliHelperAppHelpTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsCliHelperAppHelpTxt,
-		"assets/cli-helper/app-help.txt",
-	)
+    return bindataRead(
+        _assetsCliHelperAppHelpTxt,
+        "assets/cli-helper/app-help.txt",
+    )
 }
 
 func assetsCliHelperAppHelpTxt() (*asset, error) {
-	bytes, err := assetsCliHelperAppHelpTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsCliHelperAppHelpTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/cli-helper/app-help.txt", size: 1217, mode: os.FileMode(420), modTime: time.Unix(1529930379, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/cli-helper/app-help.txt", size: 1217, mode: os.FileMode(420), modTime: time.Unix(1529930379, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsCliHelperCommandHelpTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x5c\x90\x3d\x4e\x34\x31\x0c\x86\xfb\x9c\xc2\xda\x03\xe4\x00\xdb\xad\xbe\x4f\x88\x8a\x02\x01\xcd\x8a\xc2\xb3\x6b\x42\x24\x4f\x32\x8a\xb3\xfc\xc8\xf2\xdd\xd1\xfc\x04\x4d\xa8\xe2\xd7\xf6\x63\xfb\x8d\xaa\x7f\x16\x0c\x64\xe6\xdc\x12\x1c\x41\x35\xbe\xc1\x9a\x7d\xa2\xaf\x6a\xd6\x7a\x9a\x22\x16\x5a\xb2\xf7\xc4\xd3\x03\x8e\x8b\x98\x99\x97\x28\x71\x60\xba\x63\x0c\x62\x06\xe7\x4b\x1e\x47\x4c\x57\xc8\x53\x8d\x39\xc9\xab\x2a\xa5\xab\xd9\xb6\xe1\x54\x82\x6c\xbb\x55\x7b\xb5\x6e\x38\x63\x09\xb7\x91\x52\x15\xef\x7d\x83\x7f\x9f\x79\xc4\x3f\xac\x14\x72\xf9\x9e\xaf\x6f\xf1\xd1\x01\x80\xea\xae\xd6\x21\xff\x49\x2e\x25\x2e\x07\xcd\xd4\x4e\x36\xb0\xeb\xe8\xd8\xde\x9f\x73\xa7\x0f\x8c\x8c\x03\x13\x6c\x4e\x65\x9b\x51\x30\x05\xfa\xdb\xaf\xea\xcd\xd6\xfa\xde\x89\x7b\xbc\x25\x38\x7c\xc6\x0c\xef\xc4\xd3\x01\x6a\x06\x21\x82\xc0\x79\x40\x6e\x5f\xe7\xdd\x4f\x00\x00\x00\xff\xff\xd0\xcb\xcd\x27\xa9\x01\x00\x00"
 
 func assetsCliHelperCommandHelpTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsCliHelperCommandHelpTxt,
-		"assets/cli-helper/command-help.txt",
-	)
+    return bindataRead(
+        _assetsCliHelperCommandHelpTxt,
+        "assets/cli-helper/command-help.txt",
+    )
 }
 
 func assetsCliHelperCommandHelpTxt() (*asset, error) {
-	bytes, err := assetsCliHelperCommandHelpTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsCliHelperCommandHelpTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/cli-helper/command-help.txt", size: 425, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/cli-helper/command-help.txt", size: 425, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsCliHelperSubcommandHelpTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x64\x90\xc1\x4e\xc4\x30\x0c\x44\xef\xf9\x0a\x2b\x67\x94\x0f\xe8\x6d\x85\x84\x38\x81\x84\x80\xcb\xc2\xc1\xcb\x9a\x10\x94\x26\x55\x9d\x05\x24\xcb\xff\x8e\xba\x49\xba\x2a\x9c\x5a\xbb\x9e\x99\xd7\x11\x71\x4f\x8c\x9e\x54\x8d\x39\xbf\x0c\x20\x12\xde\xa1\x6e\x1f\xe9\xa7\xa8\xf6\x9b\x3e\x51\x64\x3a\x6f\x6f\x29\x4e\x77\x38\x92\x2a\xbc\xe5\x71\xc4\x74\xac\xda\xe7\xc0\xe1\x10\xe9\x26\xa2\x67\x55\xd8\xb7\x8f\x90\xa7\x12\x72\xe2\x57\x11\x4a\x47\xd5\x96\xb4\x9b\x3d\x37\x06\x91\xed\x54\x93\xf6\x38\xfb\xd3\x48\xa9\xb0\x73\xae\x8b\xdb\xc3\x98\xdd\x17\x86\x88\x87\x48\x9d\x81\x07\x91\x19\x93\xa7\x15\xe4\x1a\x0b\xf9\x3c\x07\xe2\x45\xb7\x64\x56\x6a\x03\x00\x22\x6d\x18\x56\xe3\x3f\xe2\xe6\x5a\xcf\x17\xc1\x67\x0e\xa9\x5a\x30\xd8\x2b\xb0\x8b\xc6\xbe\x14\x7b\x69\xea\x82\xb7\x9a\xfe\xef\xc5\xdc\xd7\x3a\x86\x8a\xb1\x4d\x6d\x37\x22\xae\x63\x6e\xfe\xfa\xe1\x94\xc0\x7e\x87\x0c\x1f\x14\x27\x0b\x25\x03\x13\x81\x8f\xf9\x80\xb1\xd7\xec\xcc\x6f\x00\x00\x00\xff\xff\x7a\x3a\xa0\x4c\xdd\x01\x00\x00"
 
 func assetsCliHelperSubcommandHelpTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsCliHelperSubcommandHelpTxt,
-		"assets/cli-helper/subcommand-help.txt",
-	)
+    return bindataRead(
+        _assetsCliHelperSubcommandHelpTxt,
+        "assets/cli-helper/subcommand-help.txt",
+    )
 }
 
 func assetsCliHelperSubcommandHelpTxt() (*asset, error) {
-	bytes, err := assetsCliHelperSubcommandHelpTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsCliHelperSubcommandHelpTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/cli-helper/subcommand-help.txt", size: 477, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/cli-helper/subcommand-help.txt", size: 477, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
-var _assetsConfigurationsStructureAvrJson = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xec\x56\x4d\x6b\xdc\x30\x10\xbd\xef\xaf\x10\x3a\xef\x5a\xf7\x85\x1e\x42\x1b\x7a\x68\x03\x4b\xaf\x25\x94\xa9\x35\xf1\x8a\x95\xa5\x61\x34\x4e\x13\x4a\xfe\x7b\xb1\xb6\x6c\x9c\xad\xbd\x78\x9b\x8f\xba\xe0\x9b\xec\x37\x7a\xcc\x7b\x1a\x3d\xf4\x73\xa1\x94\x06\x22\xbd\x56\xed\x52\x29\x4d\x20\xdb\xa4\xd7\xea\x6b\xfe\x54\xbf\x7f\x67\xa8\x8c\x21\x09\x83\x0b\x92\x0b\xae\x97\x8f\x10\x06\xe1\x7b\xbd\x56\xda\xe8\xce\xdf\x1b\xe7\xb1\xcb\xf5\x94\xaf\x8f\x53\xe3\x9d\x30\xe8\x0e\xf5\x9e\x88\x63\xdd\xb2\x0b\xd6\xe4\x41\x30\x99\xca\x89\xab\x42\x64\x34\xc5\x61\xb9\xaa\x30\x20\x83\xd7\x47\xbb\x25\xb6\x7b\x1f\xeb\x8e\xf1\x78\x8b\xcc\xce\xa2\x5e\xab\x1b\xf0\x09\x8f\xe0\x86\x2c\x48\x0b\x0a\x37\xd8\x81\x1e\x96\x2f\x2f\x8b\x11\x6c\x8d\xe6\x62\xb3\xf9\xf6\xe5\xf2\xe2\xc3\xd5\x65\x51\xdb\x7e\x39\x83\xf0\x1b\xa8\x71\x16\xdf\x95\xde\xc5\x30\x42\x91\xb3\x68\x72\xad\x01\x22\xf3\xfe\x0a\x76\xf8\xd9\x25\x49\x85\xdc\x49\x21\x34\x70\x58\x4f\xeb\xfe\x53\x89\x1b\x76\xb7\x20\x38\x56\x69\xa7\xfc\x84\xe0\x56\xd3\x58\xbd\x87\xf5\xf5\xe2\xc8\x81\x73\x6f\x75\xe2\xf2\xd9\x17\x1b\x6a\xf2\x38\xc2\xce\x94\x0b\x57\xc4\xb1\x62\xa8\xb3\xa7\x35\xb8\x50\x94\x44\xfd\x16\x0e\xa1\x63\xc7\x24\x83\xaf\xe2\x5b\xf1\xc3\x45\xf3\xbd\x71\xbe\x7b\x4b\x4f\xf4\xd5\x7b\x94\xfb\x76\xda\x56\x72\x1b\x9a\x76\xd5\x1c\xd7\x93\x8a\xeb\xcd\xa7\x8f\x73\x5c\xcf\x71\xdd\x27\xf8\xb5\xe3\x5a\x87\xb8\xda\x22\x58\xe4\x55\x0c\xfe\x5e\x4f\x2e\xbe\x69\x57\x99\xd8\x08\x35\x32\x1c\xe0\xc3\xf8\xbf\x8f\x70\xe3\x42\xe9\x1b\x8b\x2f\xe4\xdf\x52\x9d\x38\xb1\xb3\x1d\xdd\x9e\xf4\xf3\x0f\xf4\xaf\xdd\x3c\x2b\x3a\x0f\x42\x9f\xab\xb2\x6b\x93\x21\x76\x41\x90\x87\x24\x0f\xc2\x13\x98\x20\xc1\x24\x69\x5a\xf3\xf3\xc6\x0f\xaa\x09\xcc\xcf\xfc\x84\xdc\x3f\x21\x17\x0f\x8b\x5f\x01\x00\x00\xff\xff\x0a\x7e\x92\x4b\xf5\x0f\x00\x00"
+var _assetsConfigurationsStructureAtmelavrJson = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xec\x56\x4d\x6b\xdc\x30\x10\xbd\xef\xaf\x10\x3a\xef\x5a\xf7\x85\x1e\x42\x1b\x7a\x68\x03\x4b\xaf\x25\x94\xa9\x35\xf1\x8a\x95\xa5\x61\x34\x4e\x13\x4a\xfe\x7b\xb1\xb6\x6c\x9c\xad\xbd\x78\x9b\x8f\xba\xe0\x9b\xec\x37\x7a\xcc\x7b\x1a\x3d\xf4\x73\xa1\x94\x06\x22\xbd\x56\xed\x52\x29\x4d\x20\xdb\xa4\xd7\xea\x6b\xfe\x54\xbf\x7f\x67\xa8\x8c\x21\x09\x83\x0b\x92\x0b\xae\x97\x8f\x10\x06\xe1\x7b\xbd\x56\xda\xe8\xce\xdf\x1b\xe7\xb1\xcb\xf5\x94\xaf\x8f\x53\xe3\x9d\x30\xe8\x0e\xf5\x9e\x88\x63\xdd\xb2\x0b\xd6\xe4\x41\x30\x99\xca\x89\xab\x42\x64\x34\xc5\x61\xb9\xaa\x30\x20\x83\xd7\x47\xbb\x25\xb6\x7b\x1f\xeb\x8e\xf1\x78\x8b\xcc\xce\xa2\x5e\xab\x1b\xf0\x09\x8f\xe0\x86\x2c\x48\x0b\x0a\x37\xd8\x81\x1e\x96\x2f\x2f\x8b\x11\x6c\x8d\xe6\x62\xb3\xf9\xf6\xe5\xf2\xe2\xc3\xd5\x65\x51\xdb\x7e\x39\x83\xf0\x1b\xa8\x71\x16\xdf\x95\xde\xc5\x30\x42\x91\xb3\x68\x72\xad\x01\x22\xf3\xfe\x0a\x76\xf8\xd9\x25\x49\x85\xdc\x49\x21\x34\x70\x58\x4f\xeb\xfe\x53\x89\x1b\x76\xb7\x20\x38\x56\x69\xa7\xfc\x84\xe0\x56\xd3\x58\xbd\x87\xf5\xf5\xe2\xc8\x81\x73\x6f\x75\xe2\xf2\xd9\x17\x1b\x6a\xf2\x38\xc2\xce\x94\x0b\x57\xc4\xb1\x62\xa8\xb3\xa7\x35\xb8\x50\x94\x44\xfd\x16\x0e\xa1\x63\xc7\x24\x83\xaf\xe2\x5b\xf1\xc3\x45\xf3\xbd\x71\xbe\x7b\x4b\x4f\xf4\xd5\x7b\x94\xfb\x76\xda\x56\x72\x1b\x9a\x76\xd5\x1c\xd7\x93\x8a\xeb\xcd\xa7\x8f\x73\x5c\xcf\x71\xdd\x27\xf8\xb5\xe3\x5a\x87\xb8\xda\x22\x58\xe4\x55\x0c\xfe\x5e\x4f\x2e\xbe\x69\x57\x99\xd8\x08\x35\x32\x1c\xe0\xc3\xf8\xbf\x8f\x70\xe3\x42\xe9\x1b\x8b\x2f\xe4\xdf\x52\x9d\x38\xb1\xb3\x1d\xdd\x9e\xf4\xf3\x0f\xf4\xaf\xdd\x3c\x2b\x3a\x0f\x42\x9f\xab\xb2\x6b\x93\x21\x76\x41\x90\x87\x24\x0f\xc2\x13\x98\x20\xc1\x24\x69\x5a\xf3\xf3\xc6\x0f\xaa\x09\xcc\xcf\xfc\x84\xdc\x3f\x21\x17\x0f\x8b\x5f\x01\x00\x00\xff\xff\x0a\x7e\x92\x4b\xf5\x0f\x00\x00"
 
-func assetsConfigurationsStructureAvrJsonBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsConfigurationsStructureAvrJson,
-		"assets/configurations/structure-avr.json",
-	)
+func assetsConfigurationsStructureAtmelavrJsonBytes() ([]byte, error) {
+    return bindataRead(
+        _assetsConfigurationsStructureAtmelavrJson,
+        "assets/configurations/structure-atmelavr.json",
+    )
 }
 
-func assetsConfigurationsStructureAvrJson() (*asset, error) {
-	bytes, err := assetsConfigurationsStructureAvrJsonBytes()
-	if err != nil {
-		return nil, err
-	}
+func assetsConfigurationsStructureAtmelavrJson() (*asset, error) {
+    bytes, err := assetsConfigurationsStructureAtmelavrJsonBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/configurations/structure-avr.json", size: 4085, mode: os.FileMode(420), modTime: time.Unix(1529930399, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/configurations/structure-atmelavr.json", size: 4085, mode: os.FileMode(420), modTime: time.Unix(1529930399, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
-var _assetsTemplatesCmakeCmakelistsavrTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xac\x54\xdd\x6e\xf2\x38\x10\xbd\xcf\x53\xcc\x52\x2e\x92\x95\x16\xd0\xf6\x09\xd2\x60\xda\x6c\x43\x8c\x9c\xd0\x9f\x2b\xcb\x24\x13\xf0\x36\x89\xb3\x8e\xa3\xaa\x8a\x78\xf7\x55\xc2\x4f\x81\xad\xda\xee\xa7\x22\x24\xe3\xf1\x70\xe6\xf8\xcc\x19\x5f\xfd\xc8\xc7\xba\x82\x78\x23\x6b\xd8\x7d\x45\x63\xd4\x1f\x6b\x2c\x51\x0b\x83\x29\xac\xde\xe0\x55\x2a\xeb\x87\x2a\x59\x35\x1a\xdb\x9b\xbb\xf7\x84\x3f\x10\x06\xd7\xa3\xc9\x68\xe2\xf4\xc1\x05\xa3\x7f\x11\x2f\xe6\xa1\x3b\x27\xd0\xb6\xa7\xdb\xed\xf6\x3c\x65\xe1\xc6\x77\x30\x78\xcf\xe9\xf6\xdb\xed\xc0\x39\x01\x8f\x29\x0d\xbc\x3b\xd7\x0f\x8f\xc9\xe7\x91\x8b\xf4\x39\x9d\x2e\x03\xb2\xcf\x1d\xb6\xbb\xa0\xb7\x64\x8c\x84\x31\x8f\xe8\x92\x79\x84\x4f\x7d\x76\xf8\xd3\x94\x2c\x48\x38\x25\xa1\xf7\xcc\x67\x7e\x40\x20\xc5\x0a\xcb\x14\xcb\x44\x62\xed\x58\xd6\x15\x88\x3c\x07\xb3\x41\xa8\x84\xd9\xd4\x60\x94\xca\x93\x8d\x90\x25\x24\xa2\x84\x15\x82\x30\x60\x9b\xbd\xe2\x2b\x4c\x44\x53\x23\xa8\x0c\x52\x99\x65\xa8\xb1\x34\x50\x89\xe4\x45\xac\x11\x0a\x51\x8a\x35\xea\xda\xb1\x64\x06\x36\x79\xf2\xa3\x38\x7a\x27\x78\x71\xa5\xf1\xe9\x25\x3b\x5e\x9c\x91\xa0\xbf\x28\x00\xc0\x47\xda\xf4\xe4\xff\x3f\x1c\xe6\x35\x7e\x87\xcf\x68\xf4\xd3\x94\x3e\x43\xbc\x64\x35\x6e\x6a\x3d\xae\x37\x42\xe3\xf8\x55\xaa\x5f\x65\xf2\x5d\x94\xae\xba\xbd\x03\x2b\xb0\xae\xc5\x1a\xed\x99\x1b\xbb\x01\x27\x8c\x51\x06\x83\xf8\xd4\x03\xa5\x32\x9d\x0d\x32\xd5\x94\xe9\x08\x6e\x1a\x99\xa7\x70\x27\x72\x83\xe9\x6f\x1d\x54\x99\xca\xcc\xee\x7d\x54\x69\x55\xa1\x36\x12\xeb\xde\x77\xb1\xcb\x6e\xc9\x71\x44\x4e\x76\x87\x09\xb9\xa1\x2e\x9b\x42\xdb\xf6\xeb\x21\x38\x63\xee\x9c\x3c\x52\x76\x0f\x6d\x7b\xfc\x7d\x38\x24\x61\xcc\x9e\xa1\x6d\xfb\xb5\x0b\x5a\x49\x21\x5e\x90\x17\xb2\x94\x45\x53\x70\x8d\xff\x34\x52\x63\x6a\x3f\x10\x16\xf9\x34\x84\x43\x6b\xf6\xfb\xad\x63\x55\x5a\xfd\x8d\x89\xb1\x87\xe7\x43\x0b\x1e\x78\x4f\x4f\xe0\x46\x73\x67\x8f\x59\xa9\x5c\x26\x6f\x76\x44\x62\xf0\xe6\x8b\xc9\xe4\xcf\x6b\xa0\xc1\xd4\xb1\xac\x4c\xe6\x68\xdf\x06\xf4\x86\x33\xe2\x2d\x59\x44\x20\x62\x5e\xaf\x6f\xef\xae\xb3\x39\x1f\x0f\xf7\x5c\xc7\xbf\x8f\x92\xaa\x1a\x7c\x9e\x90\x7c\x71\x3e\x70\xac\xc3\x53\xc7\x85\x4e\x1b\x59\x2a\x9e\x49\x5d\xbc\x0a\x8d\xf6\xf0\x4c\xe2\xbe\xb7\x11\xf3\x22\x18\xb6\x47\x7a\xbb\xe8\x4e\xf6\xe1\x5e\xf6\x3e\xb4\xa0\x2c\xee\x9e\x31\xca\xe2\x4e\x55\x23\xf4\x1a\x0d\x4f\x54\x51\xc9\x1c\x79\x8a\x99\x2c\xa5\x91\xaa\xac\x2f\xaa\xc0\x82\xf9\x0f\x6e\x4c\xa0\x47\x79\xf4\x29\x3f\xb6\x8c\x0f\x4f\xda\xb7\x3b\x3f\x9a\xc0\xa3\xf3\x45\x67\xc7\x29\x99\xf9\xa1\x1f\xfb\x34\x8c\x3e\x28\xab\xaa\xaf\x4b\xfe\x07\x72\x16\xb8\xb7\x3d\x98\x25\xcb\x24\x6f\xd2\x4e\x97\x8b\x07\x70\xdb\x9b\xd5\xad\xaa\x5c\x26\xa2\x2b\x01\xb9\x5c\x69\xa1\x3b\xdf\xfe\x1b\x00\x00\xff\xff\x81\x18\xca\xeb\xa3\x06\x00\x00"
+var _assetsTemplatesCmakeCmakelistsatmelavrTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xac\x54\xdd\x6e\xf2\x38\x10\xbd\xcf\x53\xcc\x52\x2e\x92\x95\x16\xd0\xf6\x09\xd2\x60\xda\x6c\x43\x8c\x9c\xd0\x9f\x2b\xcb\x24\x13\xf0\x36\x89\xb3\x8e\xa3\xaa\x8a\x78\xf7\x55\xc2\x4f\x81\xad\xda\xee\xa7\x22\x24\xe3\xf1\x70\xe6\xf8\xcc\x19\x5f\xfd\xc8\xc7\xba\x82\x78\x23\x6b\xd8\x7d\x45\x63\xd4\x1f\x6b\x2c\x51\x0b\x83\x29\xac\xde\xe0\x55\x2a\xeb\x87\x2a\x59\x35\x1a\xdb\x9b\xbb\xf7\x84\x3f\x10\x06\xd7\xa3\xc9\x68\xe2\xf4\xc1\x05\xa3\x7f\x11\x2f\xe6\xa1\x3b\x27\xd0\xb6\xa7\xdb\xed\xf6\x3c\x65\xe1\xc6\x77\x30\x78\xcf\xe9\xf6\xdb\xed\xc0\x39\x01\x8f\x29\x0d\xbc\x3b\xd7\x0f\x8f\xc9\xe7\x91\x8b\xf4\x39\x9d\x2e\x03\xb2\xcf\x1d\xb6\xbb\xa0\xb7\x64\x8c\x84\x31\x8f\xe8\x92\x79\x84\x4f\x7d\x76\xf8\xd3\x94\x2c\x48\x38\x25\xa1\xf7\xcc\x67\x7e\x40\x20\xc5\x0a\xcb\x14\xcb\x44\x62\xed\x58\xd6\x15\x88\x3c\x07\xb3\x41\xa8\x84\xd9\xd4\x60\x94\xca\x93\x8d\x90\x25\x24\xa2\x84\x15\x82\x30\x60\x9b\xbd\xe2\x2b\x4c\x44\x53\x23\xa8\x0c\x52\x99\x65\xa8\xb1\x34\x50\x89\xe4\x45\xac\x11\x0a\x51\x8a\x35\xea\xda\xb1\x64\x06\x36\x79\xf2\xa3\x38\x7a\x27\x78\x71\xa5\xf1\xe9\x25\x3b\x5e\x9c\x91\xa0\xbf\x28\x00\xc0\x47\xda\xf4\xe4\xff\x3f\x1c\xe6\x35\x7e\x87\xcf\x68\xf4\xd3\x94\x3e\x43\xbc\x64\x35\x6e\x6a\x3d\xae\x37\x42\xe3\xf8\x55\xaa\x5f\x65\xf2\x5d\x94\xae\xba\xbd\x03\x2b\xb0\xae\xc5\x1a\xed\x99\x1b\xbb\x01\x27\x8c\x51\x06\x83\xf8\xd4\x03\xa5\x32\x9d\x0d\x32\xd5\x94\xe9\x08\x6e\x1a\x99\xa7\x70\x27\x72\x83\xe9\x6f\x1d\x54\x99\xca\xcc\xee\x7d\x54\x69\x55\xa1\x36\x12\xeb\xde\x77\xb1\xcb\x6e\xc9\x71\x44\x4e\x76\x87\x09\xb9\xa1\x2e\x9b\x42\xdb\xf6\xeb\x21\x38\x63\xee\x9c\x3c\x52\x76\x0f\x6d\x7b\xfc\x7d\x38\x24\x61\xcc\x9e\xa1\x6d\xfb\xb5\x0b\x5a\x49\x21\x5e\x90\x17\xb2\x94\x45\x53\x70\x8d\xff\x34\x52\x63\x6a\x3f\x10\x16\xf9\x34\x84\x43\x6b\xf6\xfb\xad\x63\x55\x5a\xfd\x8d\x89\xb1\x87\xe7\x43\x0b\x1e\x78\x4f\x4f\xe0\x46\x73\x67\x8f\x59\xa9\x5c\x26\x6f\x76\x44\x62\xf0\xe6\x8b\xc9\xe4\xcf\x6b\xa0\xc1\xd4\xb1\xac\x4c\xe6\x68\xdf\x06\xf4\x86\x33\xe2\x2d\x59\x44\x20\x62\x5e\xaf\x6f\xef\xae\xb3\x39\x1f\x0f\xf7\x5c\xc7\xbf\x8f\x92\xaa\x1a\x7c\x9e\x90\x7c\x71\x3e\x70\xac\xc3\x53\xc7\x85\x4e\x1b\x59\x2a\x9e\x49\x5d\xbc\x0a\x8d\xf6\xf0\x4c\xe2\xbe\xb7\x11\xf3\x22\x18\xb6\x47\x7a\xbb\xe8\x4e\xf6\xe1\x5e\xf6\x3e\xb4\xa0\x2c\xee\x9e\x31\xca\xe2\x4e\x55\x23\xf4\x1a\x0d\x4f\x54\x51\xc9\x1c\x79\x8a\x99\x2c\xa5\x91\xaa\xac\x2f\xaa\xc0\x82\xf9\x0f\x6e\x4c\xa0\x47\x79\xf4\x29\x3f\xb6\x8c\x0f\x4f\xda\xb7\x3b\x3f\x9a\xc0\xa3\xf3\x45\x67\xc7\x29\x99\xf9\xa1\x1f\xfb\x34\x8c\x3e\x28\xab\xaa\xaf\x4b\xfe\x07\x72\x16\xb8\xb7\x3d\x98\x25\xcb\x24\x6f\xd2\x4e\x97\x8b\x07\x70\xdb\x9b\xd5\xad\xaa\x5c\x26\xa2\x2b\x01\xb9\x5c\x69\xa1\x3b\xdf\xfe\x1b\x00\x00\xff\xff\x81\x18\xca\xeb\xa3\x06\x00\x00"
 
-func assetsTemplatesCmakeCmakelistsavrTxtTplBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesCmakeCmakelistsavrTxtTpl,
-		"assets/templates/cmake/CMakeListsAVR.txt.tpl",
-	)
+func assetsTemplatesCmakeCmakelistsatmelavrTxtTplBytes() ([]byte, error) {
+    return bindataRead(
+        _assetsTemplatesCmakeCmakelistsatmelavrTxtTpl,
+        "assets/templates/cmake/CMakeListsAtmelAVR.txt.tpl",
+    )
 }
 
-func assetsTemplatesCmakeCmakelistsavrTxtTpl() (*asset, error) {
-	bytes, err := assetsTemplatesCmakeCmakelistsavrTxtTplBytes()
-	if err != nil {
-		return nil, err
-	}
+func assetsTemplatesCmakeCmakelistsatmelavrTxtTpl() (*asset, error) {
+    bytes, err := assetsTemplatesCmakeCmakelistsatmelavrTxtTplBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/cmake/CMakeListsAVR.txt.tpl", size: 1699, mode: os.FileMode(420), modTime: time.Unix(1529930211, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/cmake/CMakeListsAtmelAVR.txt.tpl", size: 1699, mode: os.FileMode(420), modTime: time.Unix(1529930211, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesCmakeCmakelistsnativeTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xac\x92\xdb\x6e\x9b\x40\x10\x86\xef\xf7\x29\x46\x31\x17\x50\xa9\x49\xa4\x3e\x01\x85\xb1\x4b\xc3\x49\x0b\x76\x92\xab\x15\x86\x49\xba\x2d\xa7\x2e\x8b\xda\x0a\xf1\xee\x15\xd8\x21\x76\x1a\x35\x37\x41\x48\x30\xb3\xbf\xfe\xf9\x76\x66\x56\xef\xf2\xb0\x15\xa4\xdf\x64\x07\x87\x37\xeb\x75\xf3\xf1\x91\x6a\x52\x99\xa6\x02\xf6\x7f\xe0\x97\x6c\xd8\x3b\x55\x62\x1d\x69\xd3\x09\xec\x1b\x14\x3b\xe4\xf0\xe9\xf2\xfa\xf2\xda\x9a\x93\x31\x8f\xbe\xa2\x93\x8a\xd0\x0e\x10\x86\xe1\x34\x1c\xc7\x73\x49\x6c\xa7\x5f\xe0\xe2\x59\x33\xc5\xe3\x78\x61\x9d\x98\x07\x91\xbb\xf5\xf1\xa0\x34\x86\x43\xce\xd9\x72\x8e\x61\x2a\x92\x68\xcb\x1d\x14\xae\xc7\x8f\xbe\x2e\xc6\x18\xba\x18\x3a\xf7\x62\xed\xf9\x08\x05\xb5\x54\x17\x54\xe7\x92\x3a\x8b\xb1\x15\xc4\xaa\x69\x49\x69\x49\xdd\xac\x4f\x6d\xbe\xc1\x85\xf4\x24\x7a\x02\x5d\x73\x3b\xc0\xdb\x88\xdf\xc0\x30\x2c\xff\x4f\x87\x18\xa6\xfc\x1e\x86\x61\xfe\x4e\x49\xb6\x82\x19\x90\xe5\x55\xf6\x83\x44\x25\x6b\x59\xf5\x95\x50\xf4\xb3\x97\x8a\x0a\x73\x87\x3c\xf1\xa2\x70\xb9\xc7\x31\x1e\x2d\xd6\xaa\xe6\x3b\xe5\xda\x34\xce\xdb\x05\x0e\x38\x77\x77\x60\x27\x81\xc5\xd8\x83\x2c\xc9\xdc\xf8\xd1\x67\xc1\xd1\xd9\xf2\x04\xc1\x38\x43\x16\x93\xa0\x63\x00\x00\xcf\x36\x53\x1b\x92\xf1\xca\x38\x42\x5e\x7d\xb8\xcc\xdb\xf6\x6d\x4d\xfe\xb6\xc4\x62\x59\x51\x08\xfa\x4d\x79\xaf\xb3\x7d\x49\xe6\x39\x0d\x18\xc3\x6b\x78\xa3\xc5\x74\xa6\x1e\x49\x8b\xbc\xa9\x5a\x59\x92\x28\xe8\x41\xd6\x52\xcb\xa6\xee\x5e\x5a\xc4\xdc\xdb\xd9\x29\xc2\x0c\x73\xeb\x45\x62\x19\x81\x30\x4e\xc6\x31\x1f\x2f\xe3\x73\xa2\x20\xf6\x7c\x14\x2e\xae\xbd\xd0\x4b\xbd\x28\x4c\xc6\x7f\xab\x36\xed\xff\x2a\xbe\xee\xb8\xf6\xed\xcd\xec\xc5\x64\x9d\x97\x7d\x31\x5d\xf9\xc5\xc6\x1d\x96\xc0\x6e\xdb\x52\xe6\xd9\x54\x01\x4a\xb9\x57\x99\x9a\x16\xee\x6f\x00\x00\x00\xff\xff\xee\x03\xdd\xe3\xe3\x03\x00\x00"
 
 func assetsTemplatesCmakeCmakelistsnativeTxtTplBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesCmakeCmakelistsnativeTxtTpl,
-		"assets/templates/cmake/CMakeListsNative.txt.tpl",
-	)
+    return bindataRead(
+        _assetsTemplatesCmakeCmakelistsnativeTxtTpl,
+        "assets/templates/cmake/CMakeListsNative.txt.tpl",
+    )
 }
 
 func assetsTemplatesCmakeCmakelistsnativeTxtTpl() (*asset, error) {
-	bytes, err := assetsTemplatesCmakeCmakelistsnativeTxtTplBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesCmakeCmakelistsnativeTxtTplBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/cmake/CMakeListsNative.txt.tpl", size: 995, mode: os.FileMode(420), modTime: time.Unix(1529930168, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/cmake/CMakeListsNative.txt.tpl", size: 995, mode: os.FileMode(420), modTime: time.Unix(1529930168, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesConfigAppHelperTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x54\x8e\xb1\x6a\x03\x31\x10\x44\xfb\x7c\xc5\x80\x9b\x04\x5f\xfc\x01\x57\x9b\x34\x69\x02\xce\x0f\xec\xad\x56\xe7\xc5\xba\x5d\xb1\x92\x30\xf9\xfb\x90\x8b\x1b\x77\xc3\xbc\xe1\x31\x07\x24\xc9\x6a\x82\xb5\xf8\x42\x05\x54\x2b\xd8\x2d\xeb\x3a\x82\xba\xba\xb5\x13\xbe\xaf\xda\xa0\x0d\x64\x7f\xb8\x28\xef\x00\x64\x09\x4c\x86\x45\xb0\x0c\x2d\x7d\x42\x8c\xff\x76\xd4\xe2\x94\x24\x9d\x70\xf1\x4d\xd0\x25\x36\x35\x2f\xbe\xfe\xcc\x2f\x07\xbc\xe3\x23\x68\x93\xbb\xc7\x6d\xc6\xe5\xfc\x89\xec\x81\x7e\x95\x27\xf9\x2b\x7b\xa3\x09\x14\x69\xa8\xf9\x04\x9e\xc0\xc7\xe3\x04\xe9\xfc\xb6\x3b\xbe\x0a\xf5\xec\xb1\xcd\xa8\x8f\x84\xee\xfb\x91\xf4\x24\xca\x1e\xfb\xfe\x2c\x55\x2c\x89\xb1\x4a\x9b\x71\x57\x47\x25\xbe\xd1\x2a\xed\x37\x00\x00\xff\xff\x4f\xa8\xbb\x64\x03\x01\x00\x00"
 
 func assetsTemplatesConfigAppHelperTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesConfigAppHelperTxt,
-		"assets/templates/config/app-helper.txt",
-	)
+    return bindataRead(
+        _assetsTemplatesConfigAppHelperTxt,
+        "assets/templates/config/app-helper.txt",
+    )
 }
 
 func assetsTemplatesConfigAppHelperTxt() (*asset, error) {
-	bytes, err := assetsTemplatesConfigAppHelperTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesConfigAppHelperTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/config/app-helper.txt", size: 259, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/config/app-helper.txt", size: 259, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesConfigDependenciesHelperTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x8c\x8f\x31\x4f\xc3\x30\x10\x85\xf7\xfe\x8a\x27\x67\x85\xa8\x30\x66\xa6\x12\x43\x44\x36\x16\x14\x90\x6b\x5f\x92\x03\xc7\x67\xd9\x4e\x4b\xff\x3d\x4a\x41\x4d\x24\x10\xaa\x37\xdf\x7d\xef\xe9\xbb\x02\xca\x52\x20\x6f\xc9\x1b\xa6\xa4\x90\x75\x0f\xed\x9c\x1c\x13\xa6\x44\x11\x59\xc0\xde\xb8\xc9\x12\x24\x0f\x14\x71\x64\x41\xd0\xe6\x43\xf7\x94\xc0\x3e\x0b\xf2\x40\x1c\x11\xa2\xbc\x93\xc9\x25\x1e\x56\x7d\x30\xda\x63\x4f\x08\x4e\x1b\xb2\x9b\x02\xec\x71\x20\x6f\x25\xa2\x13\x67\x29\x82\xbb\x39\x9f\x08\x3a\x12\x9c\x18\xed\x2e\xed\x25\x76\x9f\x7a\x0c\x8e\x52\xb5\x29\xb0\xd6\x9c\xff\x40\x81\x3c\x70\x02\x27\x68\x44\x1a\x25\xd3\x02\x9d\x70\x46\xc6\x53\xcd\xfb\x6f\x7a\x7e\x07\x8a\x89\xc5\x57\x78\xdd\x96\xdb\xf2\xee\x32\x5f\x62\x6f\x9d\xd3\x7d\xaa\xf0\xd2\xfe\xb5\xb4\xd4\xb1\xe7\xcc\xe2\x67\x44\x3d\xee\xea\xba\x51\x37\x50\x4f\x4d\xa3\xda\x5f\x4e\x3f\x87\x2e\xf9\x45\xe9\x7e\xed\x34\x53\x15\x72\x9c\xe8\x3f\x21\x75\xdb\x19\x19\x03\x3b\x52\xd7\xb8\x3d\x9f\x6b\x55\xfb\x15\x00\x00\xff\xff\xc3\x0f\xf6\x3b\xe1\x01\x00\x00"
 
 func assetsTemplatesConfigDependenciesHelperTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesConfigDependenciesHelperTxt,
-		"assets/templates/config/dependencies-helper.txt",
-	)
+    return bindataRead(
+        _assetsTemplatesConfigDependenciesHelperTxt,
+        "assets/templates/config/dependencies-helper.txt",
+    )
 }
 
 func assetsTemplatesConfigDependenciesHelperTxt() (*asset, error) {
-	bytes, err := assetsTemplatesConfigDependenciesHelperTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesConfigDependenciesHelperTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/config/dependencies-helper.txt", size: 481, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/config/dependencies-helper.txt", size: 481, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesConfigPkgHelperTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x54\x8f\x41\x4e\xc3\x40\x0c\x45\xf7\x3d\xc5\x57\xbb\x01\x35\xf4\x00\x59\x17\x36\x6c\x90\xca\x05\x9c\x19\x27\x31\x9d\x8c\x47\x1e\x0f\x55\x6f\x8f\x92\x22\x24\x76\xd6\xd3\xf7\x93\xde\x01\x91\x47\xc9\x8c\x29\xe9\x40\x09\xe5\x3a\x21\x68\x1e\x65\x6a\x46\x2e\x9a\xeb\x09\x9f\xb3\x54\x48\x05\xa1\x50\xb8\xd2\xc4\xa0\x1c\x57\x10\x8c\xc9\x39\xc2\x15\x03\xa3\x55\x8e\x18\xee\x50\x9f\xd9\x70\x13\x45\x31\xfd\xe2\xe0\xf5\x84\xd7\x6f\xce\xf0\x59\xdb\x34\xef\x0e\x7f\x9a\x40\x39\xab\xaf\xbf\x43\x93\xe4\x1d\xc4\x57\xb6\x02\xe7\xea\x0f\x5d\xab\x92\x27\xec\x57\x50\xf7\x88\x62\x1c\x5c\xed\x7e\xc2\x45\x97\x75\x67\x8b\x64\x4d\x3a\xdd\xfb\xdd\x01\x2f\x78\x33\x5a\xf8\xa6\x76\xed\x71\x39\xbf\x63\x54\x83\xcf\x0c\x2a\x25\x49\xd8\x8a\xf0\x14\xb4\x52\x07\xb2\xd8\x24\x6b\x87\xd0\x21\x1c\x8f\x1d\xd8\xc3\xf3\xe6\xf8\x48\xe4\xa3\xda\xd2\xa3\xfc\x5e\x5b\x62\x93\x14\xff\x89\x46\xb5\x6d\x7f\xe6\xc2\x39\x72\x0e\xc2\xb5\x7f\x94\x3f\x0a\xeb\x4f\x00\x00\x00\xff\xff\xd3\x8f\x84\x75\x5f\x01\x00\x00"
 
 func assetsTemplatesConfigPkgHelperTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesConfigPkgHelperTxt,
-		"assets/templates/config/pkg-helper.txt",
-	)
+    return bindataRead(
+        _assetsTemplatesConfigPkgHelperTxt,
+        "assets/templates/config/pkg-helper.txt",
+    )
 }
 
 func assetsTemplatesConfigPkgHelperTxt() (*asset, error) {
-	bytes, err := assetsTemplatesConfigPkgHelperTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesConfigPkgHelperTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/config/pkg-helper.txt", size: 351, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/config/pkg-helper.txt", size: 351, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesConfigTargetsHelperTxt = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x44\x8f\x41\x6e\x83\x50\x0c\x44\xf7\x39\xc5\x28\x6c\x23\x0e\xd1\x5b\x74\xe9\xf0\xfd\xc1\xea\xc7\x46\xb6\x01\x71\xfb\x8a\x40\xd5\xad\xe7\x8d\x9f\xa6\xc3\x33\xc9\x47\xce\x78\x22\x69\x04\xb5\x66\x7b\xa0\x9a\x23\x39\x52\x74\x04\x69\x41\xe1\x8d\x9b\x2d\x33\x6b\x7e\xb2\x8d\x5c\x6c\x0d\x04\xe7\xc9\xc4\x07\x1a\x4c\xab\x8c\xab\x53\x8a\x69\xf4\xf8\xb6\x15\x03\x29\x06\x67\x4a\x7e\x74\x98\xd7\x96\xb2\x34\xc6\xad\xc4\x3e\xb1\x33\x8e\x9b\x2b\x5c\x45\x19\x45\x6a\x65\x3f\x4d\x79\x2c\x1c\xb0\x8a\xb7\x91\x97\x78\xa1\x3a\xcd\xbc\x9b\xff\x5c\xc2\xda\x68\x8c\x1e\x5f\xc7\x59\xa5\xb5\x25\x4c\xff\x9e\x3f\x3a\x48\xdc\xea\xf2\xc2\x3e\xc9\x30\x9d\x97\x4b\x52\xf0\xa6\xe0\x02\xd3\xff\x09\x8b\xdb\x26\x85\x0b\x44\x91\x13\x5f\x5d\x31\x3d\x83\x81\x23\xfa\xdf\x00\x00\x00\xff\xff\xc8\xf7\x81\xf4\x2c\x01\x00\x00"
 
 func assetsTemplatesConfigTargetsHelperTxtBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesConfigTargetsHelperTxt,
-		"assets/templates/config/targets-helper.txt",
-	)
+    return bindataRead(
+        _assetsTemplatesConfigTargetsHelperTxt,
+        "assets/templates/config/targets-helper.txt",
+    )
 }
 
 func assetsTemplatesConfigTargetsHelperTxt() (*asset, error) {
-	bytes, err := assetsTemplatesConfigTargetsHelperTxtBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesConfigTargetsHelperTxtBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/config/targets-helper.txt", size: 300, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/config/targets-helper.txt", size: 300, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesGitignoreGitignoreClion = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x64\x8f\x4f\x6b\xc2\x40\x10\xc5\xef\xf3\x29\x16\xbc\x45\x1c\xed\x27\x28\xc5\x1c\x7a\x50\x14\x22\xed\xa1\x14\xd9\x3f\x53\x33\x3a\xc9\xa6\xbb\x13\xad\xdf\xbe\x24\xc5\x5a\xe8\x61\x66\x1e\xbc\xf7\x7e\x30\x13\x73\xe1\x08\x78\xe1\x38\x07\x98\x98\xa5\x70\x6c\x61\xb9\xb6\x27\x5a\x71\xd6\xbc\x4d\x7c\xb6\x4a\xa8\x5f\x0a\xc8\x81\xec\x1c\x7c\x63\x4f\x34\x73\x3d\x4b\x98\x05\x72\xfd\x61\x2c\xae\xad\x37\x9b\x0a\xb0\xac\xf6\x95\xc6\x44\x77\xf5\x08\xf8\xd4\x75\x42\x65\xec\x9d\x10\xe0\xaa\xda\x9c\x29\x25\x0e\x04\xb8\x2f\x00\xab\x2e\xaa\xf0\xa1\xd6\xd9\xcb\xc3\x62\x01\xb8\x4b\x36\xd7\x94\x81\x6a\xad\xfb\xc6\x65\x0c\x0e\x76\xbf\x0a\x26\xe6\x95\xdb\x10\x2f\xf7\xc0\xfe\xcc\x59\xed\x60\xbe\x95\xe1\x9d\xf2\x49\x63\x87\xdc\x32\x8c\x0f\x4d\xa7\x66\x9b\x28\xd1\x67\xcf\x99\x95\x32\x14\x18\x6e\xc6\x32\x36\x1d\x0b\x05\xb3\x71\x47\xf2\x6a\x3e\x58\xc6\x40\x96\x08\x05\x8e\x6b\x1c\x77\xfc\x83\xf2\xb7\xd2\x33\xd9\x40\x69\xc8\x1f\x7c\x0d\x05\x76\xbe\xfe\x07\x2e\xaf\xad\x6d\xd8\x1b\x61\x97\x6c\xe2\x1f\xfa\xc0\x0c\x57\x61\x37\x5c\x11\xf8\x0e\x00\x00\xff\xff\x71\x80\x05\xad\x84\x01\x00\x00"
 
 func assetsTemplatesGitignoreGitignoreClionBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesGitignoreGitignoreClion,
-		"assets/templates/gitignore/.gitignore-clion",
-	)
+    return bindataRead(
+        _assetsTemplatesGitignoreGitignoreClion,
+        "assets/templates/gitignore/.gitignore-clion",
+    )
 }
 
 func assetsTemplatesGitignoreGitignoreClion() (*asset, error) {
-	bytes, err := assetsTemplatesGitignoreGitignoreClionBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesGitignoreGitignoreClionBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/gitignore/.gitignore-clion", size: 388, mode: os.FileMode(420), modTime: time.Unix(1529930168, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/gitignore/.gitignore-clion", size: 388, mode: os.FileMode(420), modTime: time.Unix(1529930168, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesGitignoreGitignoreGeneral = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x64\x8c\x4f\x4b\xf3\x40\x10\xc6\xef\xf3\x29\x16\x72\x4b\x79\xe7\xad\x9f\x40\xa4\x39\x78\x50\x22\xa4\xe8\x41\x24\xec\x9f\xb1\x3b\x75\x92\x5d\x77\x37\x0d\xfd\xf6\x92\x48\xad\xe0\x61\x66\x1e\x78\x7e\xf3\xab\xd4\xcc\x01\x70\xe6\xf0\x1f\xa0\x52\x8f\xda\xaa\xb6\x03\x6c\xba\xbe\x2b\x21\xd1\x35\xdd\x02\xde\xc5\x28\xd4\x84\xc9\x08\x01\x3e\x74\xed\x89\x52\x62\x47\x80\x7d\x0d\xd8\xc5\x50\x84\x0f\xbe\xfc\x7b\xbe\xd9\x6e\x01\xf7\x49\x67\x4f\x19\xc8\x17\x3f\x0d\x26\xa3\x33\xb0\xff\x49\x50\xa9\x17\x1e\x5d\x98\xaf\x40\x7f\xe2\x5c\xf4\x52\xbe\x36\xee\x8d\xf2\x47\x09\x11\x79\x64\x58\xe0\xdd\x66\xa3\x9e\x12\x25\xfa\x9c\x38\x73\xa1\x0c\x35\xba\x4b\xb1\x0b\x43\x64\x21\xa7\x5a\x73\x24\x5b\xd4\x3b\xcb\x0a\x64\x09\x50\xe3\xba\xd6\x31\xc7\x5f\x2a\x7b\x79\xba\x27\xed\x28\x2d\xfc\xc1\x7a\xa8\x31\x5a\xff\x47\xdc\x9c\x47\x3d\xb0\x55\xc2\x26\xe9\xc4\xdf\xf6\xc5\xe9\xce\xc2\x66\xb9\x22\xf0\x15\x00\x00\xff\xff\x0b\x90\x5c\xd2\x4b\x01\x00\x00"
 
 func assetsTemplatesGitignoreGitignoreGeneralBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesGitignoreGitignoreGeneral,
-		"assets/templates/gitignore/.gitignore-general",
-	)
+    return bindataRead(
+        _assetsTemplatesGitignoreGitignoreGeneral,
+        "assets/templates/gitignore/.gitignore-general",
+    )
 }
 
 func assetsTemplatesGitignoreGitignoreGeneral() (*asset, error) {
-	bytes, err := assetsTemplatesGitignoreGitignoreGeneralBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesGitignoreGitignoreGeneralBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/gitignore/.gitignore-general", size: 331, mode: os.FileMode(420), modTime: time.Unix(1529930168, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/gitignore/.gitignore-general", size: 331, mode: os.FileMode(420), modTime: time.Unix(1529930168, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesIdeClionAppCmakelistsTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xb4\x92\xbb\x6e\xf3\x20\x18\x86\x77\xae\x02\x45\x1e\xec\x21\xff\x3d\xf0\x63\x5a\xb9\x01\x13\x61\x3b\x4d\x27\x44\xec\x4f\x15\x8d\x0f\xa9\x0d\x51\x24\xe4\x7b\xaf\x9c\x74\x4e\x86\x2a\x2b\xef\xe1\x41\xaf\xbe\x09\x5c\xbc\x63\x0a\x87\x50\x77\xe6\x08\xeb\x33\x8c\x93\x1d\xfa\x79\x4e\xd0\x22\xe5\x44\x30\x1c\xc2\x69\x1c\xbe\xa0\x76\xeb\xde\x74\xb0\x48\xe8\x6a\xd6\x9d\xed\x6d\xe7\x3b\x3d\xc2\xb7\xb7\x23\x34\x4b\x53\x91\xc9\x1c\x47\x61\xc7\xd4\xe2\xfb\x0d\xc6\x51\x58\x9a\x66\x4c\x31\xdd\xef\x31\x29\x44\x82\x90\xed\xeb\xd6\x37\x10\xaf\xa8\x30\x47\xe0\x76\x72\xd3\x76\xb4\x67\xe3\xe0\x9f\xbb\xb8\x55\x82\x90\x69\x1a\x5d\xfb\xc9\x0d\x9d\x76\x66\xfc\x04\x17\x23\x8c\x31\x7e\xa7\xb2\x20\xfa\x7f\x95\xf1\x14\x13\xce\xaf\x6f\x54\x0a\x41\xf2\x14\x47\xe1\xa6\x52\x91\xce\xf8\xe0\x6d\xdb\xdc\x22\x52\x6d\xb2\xfc\x55\xa7\x99\x62\xb4\x94\xea\x03\x47\x81\x0a\xb2\x61\x9a\x56\x4a\xb1\xbc\xd4\x85\xac\x14\x65\x8b\x61\x46\x8f\xd0\x94\x33\x92\xdf\x47\xd7\x2d\x98\xfe\x09\xe8\x6a\x9b\x92\x92\x69\xc2\xf9\x7d\xbe\x3f\x35\xc6\xc1\x53\x3e\xc0\x25\x79\xb0\xbb\x3f\xb5\x83\xf9\xc3\xf0\x70\x81\xda\x3b\x73\x68\x21\x8e\xc2\x56\xc9\x37\x46\x4b\x7d\x3b\xa0\x28\x14\x8a\xea\x97\x8c\xb3\x62\x4e\xd0\x4f\x00\x00\x00\xff\xff\xf6\xa5\x23\x29\xbe\x02\x00\x00"
 
 func assetsTemplatesIdeClionAppCmakelistsTxtTplBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesIdeClionAppCmakelistsTxtTpl,
-		"assets/templates/ide/clion/app/CMakeLists.txt.tpl",
-	)
+    return bindataRead(
+        _assetsTemplatesIdeClionAppCmakelistsTxtTpl,
+        "assets/templates/ide/clion/app/CMakeLists.txt.tpl",
+    )
 }
 
 func assetsTemplatesIdeClionAppCmakelistsTxtTpl() (*asset, error) {
-	bytes, err := assetsTemplatesIdeClionAppCmakelistsTxtTplBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesIdeClionAppCmakelistsTxtTplBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/ide/clion/app/CMakeLists.txt.tpl", size: 702, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/ide/clion/app/CMakeLists.txt.tpl", size: 702, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x84\x52\xed\x6e\x9c\x30\x10\xfc\xef\xa7\x58\x51\x21\x01\x11\x97\x67\x20\x40\x22\x54\x2e\x54\x98\xa8\xf9\x67\x39\xb6\x39\xac\x52\x40\x36\xd7\xde\x09\xf9\xdd\x2b\xdf\xa9\x3d\x3e\xd4\xdc\x1f\xcb\xb3\xbb\xb3\x33\xbb\x5a\x2d\x46\xef\x7b\x5c\xe0\x88\xc4\xfb\x04\x86\xf3\xd8\xf4\x1d\x38\xd3\xf4\x9b\xf5\x9a\x86\x03\x1d\x1b\x63\x1e\x2f\xe0\xfa\xee\x86\xb3\xe3\x23\x84\xd3\xca\x8b\xf7\xd1\xd7\x94\xc4\x24\x2e\xf6\xdf\xb2\x3c\x2d\x81\xfe\x52\xe1\x81\x31\x7f\x9e\x7d\x7f\x5f\xe5\x1f\x1e\xd6\xf9\xe7\x3c\x7a\xc1\x24\xc9\x70\x55\x66\x4f\x6f\x55\x56\xbc\x5a\x03\xec\x27\xfd\x21\x42\x76\x3a\x85\x75\x4b\x0f\xda\x18\x67\xc1\xfb\x9c\x35\xe3\xd8\x01\x6f\x5a\xb8\x8a\x5e\x93\xa8\x4c\x60\x2e\xa0\x47\xda\x71\xaa\xb8\x31\x3e\x42\x2e\x70\x51\x87\x5a\x50\xc5\x1a\x34\x4d\x94\x73\xc2\x45\x2d\x3b\x39\xca\xbe\xd3\xde\x34\x1d\xb5\x50\xe1\x2d\x64\x8c\x6f\x0c\x72\x41\x74\x1c\xa1\x2f\x40\x39\x87\x2b\x19\xec\xf2\x34\xd4\xbd\x02\xbb\x38\x60\xbd\x12\xc8\xbd\xfc\x6f\xed\x65\xc7\xda\x23\x17\x84\x4b\x25\xd8\xd8\x2b\x29\xb4\xf7\x6f\xfb\x96\x61\x67\x30\xe6\x5e\xe5\x47\x7f\xb1\xef\xdc\xb7\x42\xdb\x16\xc6\x46\x80\x9d\x02\x5a\xf9\xa1\xa8\xed\x84\x5c\xfb\xff\x6b\xeb\xff\x6a\xb6\xe8\x7a\x13\x73\x29\x54\xcb\x56\x78\x2f\x79\xf1\x44\xca\x34\x7e\x2b\x71\x0a\xb8\x8c\xc9\x73\x96\xa7\x18\x01\x00\x38\x5a\xb1\xc7\x60\xc7\x86\xc1\x59\x60\xb6\x84\x73\x14\x6c\xeb\x83\x0d\x25\x58\xb3\x76\xcd\x12\xad\xe0\xb6\x5f\xb3\x09\x6c\x23\xc3\x60\x2f\xfe\x4f\x00\x00\x00\xff\xff\x38\x72\x86\x48\x29\x03\x00\x00"
 
 func assetsTemplatesIdeClionAppCmakelistsprivateTxtTplBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl,
-		"assets/templates/ide/clion/app/CMakeListsPrivate.txt.tpl",
-	)
+    return bindataRead(
+        _assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl,
+        "assets/templates/ide/clion/app/CMakeListsPrivate.txt.tpl",
+    )
 }
 
 func assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl() (*asset, error) {
-	bytes, err := assetsTemplatesIdeClionAppCmakelistsprivateTxtTplBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesIdeClionAppCmakelistsprivateTxtTplBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/ide/clion/app/CMakeListsPrivate.txt.tpl", size: 809, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/ide/clion/app/CMakeListsPrivate.txt.tpl", size: 809, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesIdeClionLibCmakelistsTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xb4\x92\xbb\x6e\xf3\x20\x18\x86\x77\xae\x02\x45\x1e\xec\x21\xff\x3d\xf0\x63\x5a\xb9\x01\x13\x61\x3b\x4d\x27\x44\xec\x4f\x15\x8d\x0f\xa9\x0d\x51\x24\xe4\x7b\xaf\x9c\x74\x4e\x86\x2a\x2b\xef\xe1\x41\xaf\xbe\x09\x5c\xbc\x63\x0a\x87\x50\x77\xe6\x08\xeb\x33\x8c\x93\x1d\xfa\x79\x4e\xd0\x22\xe5\x44\x30\x1c\xc2\x69\x1c\xbe\xa0\x76\xeb\xde\x74\xb0\x48\xe8\x6a\xd6\x9d\xed\x6d\xe7\x3b\x3d\xc2\xb7\xb7\x23\x34\x4b\x53\x91\xc9\x1c\x47\x61\xc7\xd4\xe2\xfb\x0d\xc6\x51\x58\x9a\x66\x4c\x31\xdd\xef\x31\x29\x44\x82\x90\xed\xeb\xd6\x37\x10\xaf\xa8\x30\x47\xe0\x76\x72\xd3\x76\xb4\x67\xe3\xe0\x9f\xbb\xb8\x55\x82\x90\x69\x1a\x5d\xfb\xc9\x0d\x9d\x76\x66\xfc\x04\x17\x23\x8c\x31\x7e\xa7\xb2\x20\xfa\x7f\x95\xf1\x14\x13\xce\xaf\x6f\x54\x0a\x41\xf2\x14\x47\xe1\xa6\x52\x91\xce\xf8\xe0\x6d\xdb\xdc\x22\x52\x6d\xb2\xfc\x55\xa7\x99\x62\xb4\x94\xea\x03\x47\x81\x0a\xb2\x61\x9a\x56\x4a\xb1\xbc\xd4\x85\xac\x14\x65\x8b\x61\x46\x8f\xd0\x94\x33\x92\xdf\x47\xd7\x2d\x98\xfe\x09\xe8\x6a\x9b\x92\x92\x69\xc2\xf9\x7d\xbe\x3f\x35\xc6\xc1\x53\x3e\xc0\x25\x79\xb0\xbb\x3f\xb5\x83\xf9\xc3\xf0\x70\x81\xda\x3b\x73\x68\x21\x8e\xc2\x56\xc9\x37\x46\x4b\x7d\x3b\xa0\x28\x14\x8a\xea\x97\x8c\xb3\x62\x4e\xd0\x4f\x00\x00\x00\xff\xff\xf6\xa5\x23\x29\xbe\x02\x00\x00"
 
 func assetsTemplatesIdeClionLibCmakelistsTxtTplBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesIdeClionLibCmakelistsTxtTpl,
-		"assets/templates/ide/clion/lib/CMakeLists.txt.tpl",
-	)
+    return bindataRead(
+        _assetsTemplatesIdeClionLibCmakelistsTxtTpl,
+        "assets/templates/ide/clion/lib/CMakeLists.txt.tpl",
+    )
 }
 
 func assetsTemplatesIdeClionLibCmakelistsTxtTpl() (*asset, error) {
-	bytes, err := assetsTemplatesIdeClionLibCmakelistsTxtTplBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesIdeClionLibCmakelistsTxtTplBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/ide/clion/lib/CMakeLists.txt.tpl", size: 702, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/ide/clion/lib/CMakeLists.txt.tpl", size: 702, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x84\x52\xed\x6e\x9c\x30\x10\xfc\xef\xa7\x58\x51\x21\x01\x11\x97\x67\x20\x40\x22\x54\x2e\x54\x98\xa8\xf9\x67\x39\xb6\x39\xac\x52\x40\x36\xd7\xde\x09\xf9\xdd\x2b\xdf\xa9\x3d\x3e\xd4\xdc\x1f\xcb\xb3\xbb\xb3\x33\xbb\x5a\x2d\x46\xef\x7b\x5c\xe0\x88\xc4\xfb\x04\x86\xf3\xd8\xf4\x1d\x38\xd3\xf4\x9b\xf5\x9a\x86\x03\x1d\x1b\x63\x1e\x2f\xe0\xfa\xee\x86\xb3\xe3\x23\x84\xd3\xca\x8b\xf7\xd1\xd7\x94\xc4\x24\x2e\xf6\xdf\xb2\x3c\x2d\x81\xfe\x52\xe1\x81\x31\x7f\x9e\x7d\x7f\x5f\xe5\x1f\x1e\xd6\xf9\xe7\x3c\x7a\xc1\x24\xc9\x70\x55\x66\x4f\x6f\x55\x56\xbc\x5a\x03\xec\x27\xfd\x21\x42\x76\x3a\x85\x75\x4b\x0f\xda\x18\x67\xc1\xfb\x9c\x35\xe3\xd8\x01\x6f\x5a\xb8\x8a\x5e\x93\xa8\x4c\x60\x2e\xa0\x47\xda\x71\xaa\xb8\x31\x3e\x42\x2e\x70\x51\x87\x5a\x50\xc5\x1a\x34\x4d\x94\x73\xc2\x45\x2d\x3b\x39\xca\xbe\xd3\xde\x34\x1d\xb5\x50\xe1\x2d\x64\x8c\x6f\x0c\x72\x41\x74\x1c\xa1\x2f\x40\x39\x87\x2b\x19\xec\xf2\x34\xd4\xbd\x02\xbb\x38\x60\xbd\x12\xc8\xbd\xfc\x6f\xed\x65\xc7\xda\x23\x17\x84\x4b\x25\xd8\xd8\x2b\x29\xb4\xf7\x6f\xfb\x96\x61\x67\x30\xe6\x5e\xe5\x47\x7f\xb1\xef\xdc\xb7\x42\xdb\x16\xc6\x46\x80\x9d\x02\x5a\xf9\xa1\xa8\xed\x84\x5c\xfb\xff\x6b\xeb\xff\x6a\xb6\xe8\x7a\x13\x73\x29\x54\xcb\x56\x78\x2f\x79\xf1\x44\xca\x34\x7e\x2b\x71\x0a\xb8\x8c\xc9\x73\x96\xa7\x18\x01\x00\x38\x5a\xb1\xc7\x60\xc7\x86\xc1\x59\x60\xb6\x84\x73\x14\x6c\xeb\x83\x0d\x25\x58\xb3\x76\xcd\x12\xad\xe0\xb6\x5f\xb3\x09\x6c\x23\xc3\x60\x2f\xfe\x4f\x00\x00\x00\xff\xff\x38\x72\x86\x48\x29\x03\x00\x00"
 
 func assetsTemplatesIdeClionLibCmakelistsprivateTxtTplBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl,
-		"assets/templates/ide/clion/lib/CMakeListsPrivate.txt.tpl",
-	)
+    return bindataRead(
+        _assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl,
+        "assets/templates/ide/clion/lib/CMakeListsPrivate.txt.tpl",
+    )
 }
 
 func assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl() (*asset, error) {
-	bytes, err := assetsTemplatesIdeClionLibCmakelistsprivateTxtTplBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesIdeClionLibCmakelistsprivateTxtTplBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/ide/clion/lib/CMakeListsPrivate.txt.tpl", size: 809, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/ide/clion/lib/CMakeListsPrivate.txt.tpl", size: 809, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesReadmeApp_readmeMd = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x52\x56\xa8\xae\x0e\x08\xf2\xf7\x72\x75\x0e\x89\xf7\x73\xf4\x75\xad\xad\xe5\xe2\x0a\xc9\xc8\x2c\x56\xc8\x2c\x56\x48\x54\x28\xcf\xcc\x07\xc9\xfb\x38\x86\xb8\xf9\x07\xf9\xd6\xd6\x2a\x24\x16\x14\xe4\x64\x26\x27\x96\x64\xe6\xe7\xe9\x71\x71\x85\xe4\x2b\x24\x95\x66\xe6\xa4\x28\x94\x80\x74\x20\xc9\x59\x71\x25\x24\x24\x24\x25\x16\x67\x70\x81\x4c\x28\x2a\xcd\x03\xf1\xb9\x00\x01\x00\x00\xff\xff\x66\xa1\x39\x26\x6c\x00\x00\x00"
 
 func assetsTemplatesReadmeApp_readmeMdBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesReadmeApp_readmeMd,
-		"assets/templates/readme/APP_README.md",
-	)
+    return bindataRead(
+        _assetsTemplatesReadmeApp_readmeMd,
+        "assets/templates/readme/APP_README.md",
+    )
 }
 
 func assetsTemplatesReadmeApp_readmeMd() (*asset, error) {
-	bytes, err := assetsTemplatesReadmeApp_readmeMdBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesReadmeApp_readmeMdBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/readme/APP_README.md", size: 108, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/readme/APP_README.md", size: 108, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesReadmePkg_readmeMd = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x64\xce\xcd\x8a\x83\x30\x14\x05\xe0\xfd\x7d\x8a\x0b\xb3\xf6\x05\x5c\x4d\x66\x26\xc2\xfc\x68\x86\x54\xda\x65\x73\x35\xb1\x06\x7f\x22\xd1\x22\x45\xf2\xee\x25\x42\xe9\xa2\xdb\x73\xee\xe1\xbb\x6f\xb8\x6d\xff\x52\xfc\xf0\xcf\xf2\x5c\xb0\x9c\x87\x00\x50\xb6\x76\x46\x3b\x23\xa1\x5a\xad\x53\x38\x51\xdd\xd1\xc5\x60\xe3\x3c\x24\x38\xf5\xb4\x34\xce\x0f\x69\x5c\xfe\xb1\x32\x13\x32\x0f\x01\x12\x6c\x3c\x0d\x66\x75\xbe\x8b\x4d\x26\x59\xce\x4f\x42\xfe\xee\x55\xe5\xc8\xeb\x18\x7f\x08\x26\xbf\x76\xc3\xa1\x1d\xeb\xfe\xaa\x0d\x2e\x91\x7b\x18\x14\x59\x6d\x26\x33\x6a\x33\xd6\xb7\x14\x40\x29\x55\xd1\xdc\xc2\x6a\x5d\xbc\x42\xd2\xfa\xe5\xe7\xf7\x67\x70\xe4\xf2\xf0\x2d\x8a\x10\xe2\x10\xee\x01\x00\x00\xff\xff\xf3\xc2\x36\xe9\xdf\x00\x00\x00"
 
 func assetsTemplatesReadmePkg_readmeMdBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesReadmePkg_readmeMd,
-		"assets/templates/readme/PKG_README.md",
-	)
+    return bindataRead(
+        _assetsTemplatesReadmePkg_readmeMd,
+        "assets/templates/readme/PKG_README.md",
+    )
 }
 
 func assetsTemplatesReadmePkg_readmeMd() (*asset, error) {
-	bytes, err := assetsTemplatesReadmePkg_readmeMdBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesReadmePkg_readmeMdBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/readme/PKG_README.md", size: 223, mode: os.FileMode(420), modTime: time.Unix(1529930258, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/readme/PKG_README.md", size: 223, mode: os.FileMode(420), modTime: time.Unix(1529930258, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesSampleProgramAppMainCpp = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x52\xce\xcc\x4b\xce\x29\x4d\x49\x55\xb0\x71\xce\x2f\x4e\xd4\x0f\x0a\x09\xd1\xcb\xc8\xb0\xe3\x42\x13\xf6\x2f\x2d\x29\x28\x2d\x09\xc8\xcc\x03\x4b\x72\xc1\xb9\x0a\x39\xa9\x29\x01\x99\x79\x1a\x4e\xf9\x89\x45\x29\x56\x56\x3e\xae\x2e\x9a\xd6\x5c\x5c\x65\xf9\x99\x29\x0a\xc5\xa9\x25\xa5\x05\x1a\x9a\x0a\xd5\x5c\x0a\x0a\x0a\x0a\x41\x21\x21\x56\x56\x49\xa9\xe9\x99\x79\x1a\x9a\xd6\x5c\xb5\x50\x35\x39\xf9\xf9\x08\x25\x10\xa3\xf4\xf2\xc1\x2a\x40\x02\x29\xa9\x39\x89\x95\x1a\xa6\x06\x50\x2e\x4c\x3e\x2d\x0d\x5d\x81\x01\xd8\x48\x40\x00\x00\x00\xff\xff\xca\x5a\x2a\xce\xca\x00\x00\x00"
 
 func assetsTemplatesSampleProgramAppMainCppBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesSampleProgramAppMainCpp,
-		"assets/templates/sample-program/app/main.cpp",
-	)
+    return bindataRead(
+        _assetsTemplatesSampleProgramAppMainCpp,
+        "assets/templates/sample-program/app/main.cpp",
+    )
 }
 
 func assetsTemplatesSampleProgramAppMainCpp() (*asset, error) {
-	bytes, err := assetsTemplatesSampleProgramAppMainCppBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesSampleProgramAppMainCppBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/sample-program/app/main.cpp", size: 202, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/sample-program/app/main.cpp", size: 202, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesSampleProgramPkgMainCpp = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x52\xce\xcc\x4b\xce\x29\x4d\x49\x55\xb0\x71\xce\x2f\x4e\xd4\x0f\x0a\x09\xd1\xcb\xc8\xb0\xe3\x42\x08\xe7\x97\x96\x14\x94\x96\xe8\x65\xd8\x71\x71\x95\xe5\x67\xa6\x28\x14\xa7\x96\x94\x16\x68\x68\x2a\x54\x73\x29\x28\x28\x28\x04\x85\x84\x58\x59\x25\xa5\xa6\x67\xe6\x69\x68\x5a\x73\xd5\x42\xd5\xe4\xe4\xe7\x23\x94\x24\x95\x66\xe6\x94\xf8\xa4\xa6\xf8\x83\x95\x80\x44\x52\x52\x73\x12\x2b\x35\x4c\x0d\xa0\x5c\xb8\x82\xb4\x34\x74\x15\x06\x60\x43\x01\x01\x00\x00\xff\xff\x09\x56\x5f\x0e\xa4\x00\x00\x00"
 
 func assetsTemplatesSampleProgramPkgMainCppBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesSampleProgramPkgMainCpp,
-		"assets/templates/sample-program/pkg/main.cpp",
-	)
+    return bindataRead(
+        _assetsTemplatesSampleProgramPkgMainCpp,
+        "assets/templates/sample-program/pkg/main.cpp",
+    )
 }
 
 func assetsTemplatesSampleProgramPkgMainCpp() (*asset, error) {
-	bytes, err := assetsTemplatesSampleProgramPkgMainCppBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesSampleProgramPkgMainCppBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/sample-program/pkg/main.cpp", size: 164, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/sample-program/pkg/main.cpp", size: 164, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesSampleProgramPkgOutputCpp = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x52\xce\xcc\x4b\xce\x29\x4d\x49\x55\xb0\x71\xce\x2f\x4e\xd4\xf7\x2f\x2d\x29\x28\x2d\x09\xc8\xcc\xd3\xcb\xc8\xb0\xe3\x42\x48\xe6\x83\xc5\xf5\x32\xec\xb8\xb8\xe0\x4a\x14\x72\x52\x53\x02\x32\xf3\x34\x9c\xf2\x13\x8b\x52\xac\xac\x7c\x5c\x5d\x34\xad\xb9\xb8\xca\xf2\x33\x53\x14\x92\x4a\x33\x73\x4a\x7c\x52\x53\xfc\xf3\x34\x34\x15\xaa\xb9\x14\x14\x14\xa0\x8a\xf5\xf2\xf3\x34\x34\xad\xb9\x6a\xd1\xd5\xa5\xa5\x61\x28\x04\x09\x81\x54\x02\x02\x00\x00\xff\xff\x09\xae\xb8\x13\xa2\x00\x00\x00"
 
 func assetsTemplatesSampleProgramPkgOutputCppBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesSampleProgramPkgOutputCpp,
-		"assets/templates/sample-program/pkg/output.cpp",
-	)
+    return bindataRead(
+        _assetsTemplatesSampleProgramPkgOutputCpp,
+        "assets/templates/sample-program/pkg/output.cpp",
+    )
 }
 
 func assetsTemplatesSampleProgramPkgOutputCpp() (*asset, error) {
-	bytes, err := assetsTemplatesSampleProgramPkgOutputCppBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesSampleProgramPkgOutputCppBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/sample-program/pkg/output.cpp", size: 162, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/sample-program/pkg/output.cpp", size: 162, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesSampleProgramPkgOutputH = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x52\xce\x4c\xcb\x4b\x49\x4d\x53\xf0\x0f\x0d\x09\x08\x0d\x89\xf7\xe0\x52\x4e\x49\x4d\xcb\xcc\x4b\x45\x08\x70\xe9\xeb\x2b\x84\x94\x16\xe5\x15\x2b\x24\x95\x66\xe6\x94\x28\x64\xe6\x29\xf8\xb8\xba\x28\xf8\xfb\x29\x68\x04\x78\xfa\x29\x18\x1a\x6b\x72\x95\xe5\x67\xa6\x40\x64\x7d\x52\x53\xfc\xf3\x34\x34\xad\x71\xea\x72\x73\xc3\xa5\x2d\x2d\x0d\xac\x4f\x39\x35\x2f\x25\x33\x4d\x41\x5f\x0b\xee\x02\x05\x2d\x7d\x2e\x40\x00\x00\x00\xff\xff\xea\x03\x2b\xa5\xa7\x00\x00\x00"
 
 func assetsTemplatesSampleProgramPkgOutputHBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesSampleProgramPkgOutputH,
-		"assets/templates/sample-program/pkg/output.h",
-	)
+    return bindataRead(
+        _assetsTemplatesSampleProgramPkgOutputH,
+        "assets/templates/sample-program/pkg/output.h",
+    )
 }
 
 func assetsTemplatesSampleProgramPkgOutputH() (*asset, error) {
-	bytes, err := assetsTemplatesSampleProgramPkgOutputHBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesSampleProgramPkgOutputHBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/sample-program/pkg/output.h", size: 167, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/sample-program/pkg/output.h", size: 167, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x52\xce\xcc\x4b\xce\x29\x4d\x49\x55\xb0\x71\xce\x2f\x4e\xd4\x0f\x29\x4a\x4c\x4e\xd5\xcb\xc8\xb0\xe3\x42\x93\x08\x75\x0c\x0a\x41\x13\x2f\x28\xca\xcc\x2b\x49\x2d\xd2\xcb\xb0\xe3\xe2\x2a\xcb\xcf\x4c\x51\x28\x4e\x2d\x29\x2d\xd0\xd0\x54\xa8\xe6\x52\x50\x50\x50\x28\x4d\x2c\x2a\xd1\x4b\x4a\x4d\xcf\xcc\xd3\xb0\x34\x33\x30\xd0\xb4\x06\x8b\x96\x80\x2d\x80\x08\xab\x81\x94\x68\x5a\x73\xd5\x42\xf5\xe7\xe4\xe7\x23\xb4\x17\x27\x56\x7a\xa4\xe6\xe4\xe4\x6b\x28\x85\xe7\x17\xe5\xa4\x28\x41\xd4\x01\x02\x00\x00\xff\xff\xec\xd3\x87\xf9\xaf\x00\x00\x00"
 
 func assetsTemplatesSampleProgramPkgHeaderOnlyMainCppBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp,
-		"assets/templates/sample-program/pkg-header-only/main.cpp",
-	)
+    return bindataRead(
+        _assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp,
+        "assets/templates/sample-program/pkg-header-only/main.cpp",
+    )
 }
 
 func assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp() (*asset, error) {
-	bytes, err := assetsTemplatesSampleProgramPkgHeaderOnlyMainCppBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesSampleProgramPkgHeaderOnlyMainCppBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/sample-program/pkg-header-only/main.cpp", size: 175, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/sample-program/pkg-header-only/main.cpp", size: 175, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 var _assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH = "\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\x4c\x8e\x31\x4b\x04\x31\x10\x46\xfb\xf9\x15\x1f\x97\x46\xb7\x30\xbd\x06\x1b\x39\x38\x1b\x39\x8e\x03\x4b\x89\x99\x09\x19\x08\x89\x24\xbb\xea\x22\xfe\x77\xd9\x28\x78\xdd\xf0\x98\x37\x6f\x8c\xc6\xc2\x12\x71\x3c\x3d\x3e\x9d\xf7\xa7\x97\x03\x19\x96\xa8\x45\x2e\x08\x19\x2d\x21\x2f\x2c\x70\x0f\xb5\x7b\x7b\x6e\x3e\xc8\x4d\x4a\xf7\x44\xd6\xe2\xd8\xb4\xcc\x1d\x07\xc9\xb9\xc2\x17\xc6\x9c\x04\x1f\xb5\x31\xfa\x9b\x04\x8d\x2a\x8c\xd7\x75\xd0\xa5\x4b\xdb\x94\xfd\xe7\xed\xdf\xfe\x73\x6d\x99\xe9\xbd\x2a\xa3\xfb\x75\xb0\xab\x90\x7c\x9b\xc6\x85\x6b\x7c\x11\x00\xcc\x5b\x10\xce\x61\xf7\x6b\xed\xb6\x79\x24\x9c\x83\x14\xce\x77\xf4\x4d\x64\xa4\xb0\x46\xd8\xe9\xff\x75\x4c\x96\x7e\x02\x00\x00\xff\xff\xd5\xea\xf2\x80\xe2\x00\x00\x00"
 
 func assetsTemplatesSampleProgramPkgHeaderOnlyPrinterHBytes() ([]byte, error) {
-	return bindataRead(
-		_assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH,
-		"assets/templates/sample-program/pkg-header-only/printer.h",
-	)
+    return bindataRead(
+        _assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH,
+        "assets/templates/sample-program/pkg-header-only/printer.h",
+    )
 }
 
 func assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH() (*asset, error) {
-	bytes, err := assetsTemplatesSampleProgramPkgHeaderOnlyPrinterHBytes()
-	if err != nil {
-		return nil, err
-	}
+    bytes, err := assetsTemplatesSampleProgramPkgHeaderOnlyPrinterHBytes()
+    if err != nil {
+        return nil, err
+    }
 
-	info := bindataFileInfo{name: "assets/templates/sample-program/pkg-header-only/printer.h", size: 226, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
-	a := &asset{bytes: bytes, info: info}
-	return a, nil
+    info := bindataFileInfo{name: "assets/templates/sample-program/pkg-header-only/printer.h", size: 226, mode: os.FileMode(420), modTime: time.Unix(1529929703, 0)}
+    a := &asset{bytes: bytes, info: info}
+    return a, nil
 }
 
 // Asset loads and returns the asset for the given name.
 // It returns an error if the asset could not be found or
 // could not be loaded.
 func Asset(name string) ([]byte, error) {
-	cannonicalName := strings.Replace(name, "\\", "/", -1)
-	if f, ok := _bindata[cannonicalName]; ok {
-		a, err := f()
-		if err != nil {
-			return nil, fmt.Errorf("Asset %s can't read by error: %v", name, err)
-		}
-		return a.bytes, nil
-	}
-	return nil, fmt.Errorf("Asset %s not found", name)
+    cannonicalName := strings.Replace(name, "\\", "/", -1)
+    if f, ok := _bindata[cannonicalName]; ok {
+        a, err := f()
+        if err != nil {
+            return nil, fmt.Errorf("Asset %s can't read by error: %v", name, err)
+        }
+        return a.bytes, nil
+    }
+    return nil, fmt.Errorf("Asset %s not found", name)
 }
 
 // MustAsset is like Asset but panics when Asset would return an error.
 // It simplifies safe initialization of global variables.
 func MustAsset(name string) []byte {
-	a, err := Asset(name)
-	if err != nil {
-		panic("asset: Asset(" + name + "): " + err.Error())
-	}
+    a, err := Asset(name)
+    if err != nil {
+        panic("asset: Asset(" + name + "): " + err.Error())
+    }
 
-	return a
+    return a
 }
 
 // AssetInfo loads and returns the asset info for the given name.
 // It returns an error if the asset could not be found or
 // could not be loaded.
 func AssetInfo(name string) (os.FileInfo, error) {
-	cannonicalName := strings.Replace(name, "\\", "/", -1)
-	if f, ok := _bindata[cannonicalName]; ok {
-		a, err := f()
-		if err != nil {
-			return nil, fmt.Errorf("AssetInfo %s can't read by error: %v", name, err)
-		}
-		return a.info, nil
-	}
-	return nil, fmt.Errorf("AssetInfo %s not found", name)
+    cannonicalName := strings.Replace(name, "\\", "/", -1)
+    if f, ok := _bindata[cannonicalName]; ok {
+        a, err := f()
+        if err != nil {
+            return nil, fmt.Errorf("AssetInfo %s can't read by error: %v", name, err)
+        }
+        return a.info, nil
+    }
+    return nil, fmt.Errorf("AssetInfo %s not found", name)
 }
 
 // AssetNames returns the names of the assets.
 func AssetNames() []string {
-	names := make([]string, 0, len(_bindata))
-	for name := range _bindata {
-		names = append(names, name)
-	}
-	return names
+    names := make([]string, 0, len(_bindata))
+    for name := range _bindata {
+        names = append(names, name)
+    }
+    return names
 }
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"assets/cli-helper/app-help.txt": assetsCliHelperAppHelpTxt,
-	"assets/cli-helper/command-help.txt": assetsCliHelperCommandHelpTxt,
-	"assets/cli-helper/subcommand-help.txt": assetsCliHelperSubcommandHelpTxt,
-	"assets/configurations/structure-avr.json": assetsConfigurationsStructureAvrJson,
-	"assets/templates/cmake/CMakeListsAVR.txt.tpl": assetsTemplatesCmakeCmakelistsavrTxtTpl,
-	"assets/templates/cmake/CMakeListsNative.txt.tpl": assetsTemplatesCmakeCmakelistsnativeTxtTpl,
-	"assets/templates/config/app-helper.txt": assetsTemplatesConfigAppHelperTxt,
-	"assets/templates/config/dependencies-helper.txt": assetsTemplatesConfigDependenciesHelperTxt,
-	"assets/templates/config/pkg-helper.txt": assetsTemplatesConfigPkgHelperTxt,
-	"assets/templates/config/targets-helper.txt": assetsTemplatesConfigTargetsHelperTxt,
-	"assets/templates/gitignore/.gitignore-clion": assetsTemplatesGitignoreGitignoreClion,
-	"assets/templates/gitignore/.gitignore-general": assetsTemplatesGitignoreGitignoreGeneral,
-	"assets/templates/ide/clion/app/CMakeLists.txt.tpl": assetsTemplatesIdeClionAppCmakelistsTxtTpl,
-	"assets/templates/ide/clion/app/CMakeListsPrivate.txt.tpl": assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl,
-	"assets/templates/ide/clion/lib/CMakeLists.txt.tpl": assetsTemplatesIdeClionLibCmakelistsTxtTpl,
-	"assets/templates/ide/clion/lib/CMakeListsPrivate.txt.tpl": assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl,
-	"assets/templates/readme/APP_README.md": assetsTemplatesReadmeApp_readmeMd,
-	"assets/templates/readme/PKG_README.md": assetsTemplatesReadmePkg_readmeMd,
-	"assets/templates/sample-program/app/main.cpp": assetsTemplatesSampleProgramAppMainCpp,
-	"assets/templates/sample-program/pkg/main.cpp": assetsTemplatesSampleProgramPkgMainCpp,
-	"assets/templates/sample-program/pkg/output.cpp": assetsTemplatesSampleProgramPkgOutputCpp,
-	"assets/templates/sample-program/pkg/output.h": assetsTemplatesSampleProgramPkgOutputH,
-	"assets/templates/sample-program/pkg-header-only/main.cpp": assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp,
-	"assets/templates/sample-program/pkg-header-only/printer.h": assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH,
+    "assets/cli-helper/app-help.txt":                            assetsCliHelperAppHelpTxt,
+    "assets/cli-helper/command-help.txt":                        assetsCliHelperCommandHelpTxt,
+    "assets/cli-helper/subcommand-help.txt":                     assetsCliHelperSubcommandHelpTxt,
+    "assets/configurations/structure-atmelavr.json":             assetsConfigurationsStructureAtmelavrJson,
+    "assets/templates/cmake/CMakeListsAtmelAVR.txt.tpl":         assetsTemplatesCmakeCmakelistsatmelavrTxtTpl,
+    "assets/templates/cmake/CMakeListsNative.txt.tpl":           assetsTemplatesCmakeCmakelistsnativeTxtTpl,
+    "assets/templates/config/app-helper.txt":                    assetsTemplatesConfigAppHelperTxt,
+    "assets/templates/config/dependencies-helper.txt":           assetsTemplatesConfigDependenciesHelperTxt,
+    "assets/templates/config/pkg-helper.txt":                    assetsTemplatesConfigPkgHelperTxt,
+    "assets/templates/config/targets-helper.txt":                assetsTemplatesConfigTargetsHelperTxt,
+    "assets/templates/gitignore/.gitignore-clion":               assetsTemplatesGitignoreGitignoreClion,
+    "assets/templates/gitignore/.gitignore-general":             assetsTemplatesGitignoreGitignoreGeneral,
+    "assets/templates/ide/clion/app/CMakeLists.txt.tpl":         assetsTemplatesIdeClionAppCmakelistsTxtTpl,
+    "assets/templates/ide/clion/app/CMakeListsPrivate.txt.tpl":  assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl,
+    "assets/templates/ide/clion/lib/CMakeLists.txt.tpl":         assetsTemplatesIdeClionLibCmakelistsTxtTpl,
+    "assets/templates/ide/clion/lib/CMakeListsPrivate.txt.tpl":  assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl,
+    "assets/templates/readme/APP_README.md":                     assetsTemplatesReadmeApp_readmeMd,
+    "assets/templates/readme/PKG_README.md":                     assetsTemplatesReadmePkg_readmeMd,
+    "assets/templates/sample-program/app/main.cpp":              assetsTemplatesSampleProgramAppMainCpp,
+    "assets/templates/sample-program/pkg/main.cpp":              assetsTemplatesSampleProgramPkgMainCpp,
+    "assets/templates/sample-program/pkg/output.cpp":            assetsTemplatesSampleProgramPkgOutputCpp,
+    "assets/templates/sample-program/pkg/output.h":              assetsTemplatesSampleProgramPkgOutputH,
+    "assets/templates/sample-program/pkg-header-only/main.cpp":  assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp,
+    "assets/templates/sample-program/pkg-header-only/printer.h": assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH,
 }
 
 // AssetDir returns the file names below a certain
@@ -663,134 +663,134 @@ var _bindata = map[string]func() (*asset, error){
 // AssetDir("foo.txt") and AssetDir("notexist") would return an error
 // AssetDir("") will return []string{"data"}.
 func AssetDir(name string) ([]string, error) {
-	node := _bintree
-	if len(name) != 0 {
-		cannonicalName := strings.Replace(name, "\\", "/", -1)
-		pathList := strings.Split(cannonicalName, "/")
-		for _, p := range pathList {
-			node = node.Children[p]
-			if node == nil {
-				return nil, fmt.Errorf("Asset %s not found", name)
-			}
-		}
-	}
-	if node.Func != nil {
-		return nil, fmt.Errorf("Asset %s not found", name)
-	}
-	rv := make([]string, 0, len(node.Children))
-	for childName := range node.Children {
-		rv = append(rv, childName)
-	}
-	return rv, nil
+    node := _bintree
+    if len(name) != 0 {
+        cannonicalName := strings.Replace(name, "\\", "/", -1)
+        pathList := strings.Split(cannonicalName, "/")
+        for _, p := range pathList {
+            node = node.Children[p]
+            if node == nil {
+                return nil, fmt.Errorf("Asset %s not found", name)
+            }
+        }
+    }
+    if node.Func != nil {
+        return nil, fmt.Errorf("Asset %s not found", name)
+    }
+    rv := make([]string, 0, len(node.Children))
+    for childName := range node.Children {
+        rv = append(rv, childName)
+    }
+    return rv, nil
 }
 
 type bintree struct {
-	Func     func() (*asset, error)
-	Children map[string]*bintree
+    Func     func() (*asset, error)
+    Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
-	"assets": &bintree{nil, map[string]*bintree{
-		"cli-helper": &bintree{nil, map[string]*bintree{
-			"app-help.txt": &bintree{assetsCliHelperAppHelpTxt, map[string]*bintree{}},
-			"command-help.txt": &bintree{assetsCliHelperCommandHelpTxt, map[string]*bintree{}},
-			"subcommand-help.txt": &bintree{assetsCliHelperSubcommandHelpTxt, map[string]*bintree{}},
-		}},
-		"configurations": &bintree{nil, map[string]*bintree{
-			"structure-avr.json": &bintree{assetsConfigurationsStructureAvrJson, map[string]*bintree{}},
-		}},
-		"templates": &bintree{nil, map[string]*bintree{
-			"cmake": &bintree{nil, map[string]*bintree{
-				"CMakeListsAVR.txt.tpl": &bintree{assetsTemplatesCmakeCmakelistsavrTxtTpl, map[string]*bintree{}},
-				"CMakeListsNative.txt.tpl": &bintree{assetsTemplatesCmakeCmakelistsnativeTxtTpl, map[string]*bintree{}},
-			}},
-			"config": &bintree{nil, map[string]*bintree{
-				"app-helper.txt": &bintree{assetsTemplatesConfigAppHelperTxt, map[string]*bintree{}},
-				"dependencies-helper.txt": &bintree{assetsTemplatesConfigDependenciesHelperTxt, map[string]*bintree{}},
-				"pkg-helper.txt": &bintree{assetsTemplatesConfigPkgHelperTxt, map[string]*bintree{}},
-				"targets-helper.txt": &bintree{assetsTemplatesConfigTargetsHelperTxt, map[string]*bintree{}},
-			}},
-			"gitignore": &bintree{nil, map[string]*bintree{
-				".gitignore-clion": &bintree{assetsTemplatesGitignoreGitignoreClion, map[string]*bintree{}},
-				".gitignore-general": &bintree{assetsTemplatesGitignoreGitignoreGeneral, map[string]*bintree{}},
-			}},
-			"ide": &bintree{nil, map[string]*bintree{
-				"clion": &bintree{nil, map[string]*bintree{
-					"app": &bintree{nil, map[string]*bintree{
-						"CMakeLists.txt.tpl": &bintree{assetsTemplatesIdeClionAppCmakelistsTxtTpl, map[string]*bintree{}},
-						"CMakeListsPrivate.txt.tpl": &bintree{assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl, map[string]*bintree{}},
-					}},
-					"lib": &bintree{nil, map[string]*bintree{
-						"CMakeLists.txt.tpl": &bintree{assetsTemplatesIdeClionLibCmakelistsTxtTpl, map[string]*bintree{}},
-						"CMakeListsPrivate.txt.tpl": &bintree{assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl, map[string]*bintree{}},
-					}},
-				}},
-			}},
-			"readme": &bintree{nil, map[string]*bintree{
-				"APP_README.md": &bintree{assetsTemplatesReadmeApp_readmeMd, map[string]*bintree{}},
-				"PKG_README.md": &bintree{assetsTemplatesReadmePkg_readmeMd, map[string]*bintree{}},
-			}},
-			"sample-program": &bintree{nil, map[string]*bintree{
-				"app": &bintree{nil, map[string]*bintree{
-					"main.cpp": &bintree{assetsTemplatesSampleProgramAppMainCpp, map[string]*bintree{}},
-				}},
-				"pkg": &bintree{nil, map[string]*bintree{
-					"main.cpp": &bintree{assetsTemplatesSampleProgramPkgMainCpp, map[string]*bintree{}},
-					"output.cpp": &bintree{assetsTemplatesSampleProgramPkgOutputCpp, map[string]*bintree{}},
-					"output.h": &bintree{assetsTemplatesSampleProgramPkgOutputH, map[string]*bintree{}},
-				}},
-				"pkg-header-only": &bintree{nil, map[string]*bintree{
-					"main.cpp": &bintree{assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp, map[string]*bintree{}},
-					"printer.h": &bintree{assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH, map[string]*bintree{}},
-				}},
-			}},
-		}},
-	}},
+    "assets": &bintree{nil, map[string]*bintree{
+        "cli-helper": &bintree{nil, map[string]*bintree{
+            "app-help.txt":        &bintree{assetsCliHelperAppHelpTxt, map[string]*bintree{}},
+            "command-help.txt":    &bintree{assetsCliHelperCommandHelpTxt, map[string]*bintree{}},
+            "subcommand-help.txt": &bintree{assetsCliHelperSubcommandHelpTxt, map[string]*bintree{}},
+        }},
+        "configurations": &bintree{nil, map[string]*bintree{
+            "structure-atmelavr.json": &bintree{assetsConfigurationsStructureAtmelavrJson, map[string]*bintree{}},
+        }},
+        "templates": &bintree{nil, map[string]*bintree{
+            "cmake": &bintree{nil, map[string]*bintree{
+                "CMakeListsAtmelAVR.txt.tpl": &bintree{assetsTemplatesCmakeCmakelistsatmelavrTxtTpl, map[string]*bintree{}},
+                "CMakeListsNative.txt.tpl":   &bintree{assetsTemplatesCmakeCmakelistsnativeTxtTpl, map[string]*bintree{}},
+            }},
+            "config": &bintree{nil, map[string]*bintree{
+                "app-helper.txt":          &bintree{assetsTemplatesConfigAppHelperTxt, map[string]*bintree{}},
+                "dependencies-helper.txt": &bintree{assetsTemplatesConfigDependenciesHelperTxt, map[string]*bintree{}},
+                "pkg-helper.txt":          &bintree{assetsTemplatesConfigPkgHelperTxt, map[string]*bintree{}},
+                "targets-helper.txt":      &bintree{assetsTemplatesConfigTargetsHelperTxt, map[string]*bintree{}},
+            }},
+            "gitignore": &bintree{nil, map[string]*bintree{
+                ".gitignore-clion":   &bintree{assetsTemplatesGitignoreGitignoreClion, map[string]*bintree{}},
+                ".gitignore-general": &bintree{assetsTemplatesGitignoreGitignoreGeneral, map[string]*bintree{}},
+            }},
+            "ide": &bintree{nil, map[string]*bintree{
+                "clion": &bintree{nil, map[string]*bintree{
+                    "app": &bintree{nil, map[string]*bintree{
+                        "CMakeLists.txt.tpl":        &bintree{assetsTemplatesIdeClionAppCmakelistsTxtTpl, map[string]*bintree{}},
+                        "CMakeListsPrivate.txt.tpl": &bintree{assetsTemplatesIdeClionAppCmakelistsprivateTxtTpl, map[string]*bintree{}},
+                    }},
+                    "lib": &bintree{nil, map[string]*bintree{
+                        "CMakeLists.txt.tpl":        &bintree{assetsTemplatesIdeClionLibCmakelistsTxtTpl, map[string]*bintree{}},
+                        "CMakeListsPrivate.txt.tpl": &bintree{assetsTemplatesIdeClionLibCmakelistsprivateTxtTpl, map[string]*bintree{}},
+                    }},
+                }},
+            }},
+            "readme": &bintree{nil, map[string]*bintree{
+                "APP_README.md": &bintree{assetsTemplatesReadmeApp_readmeMd, map[string]*bintree{}},
+                "PKG_README.md": &bintree{assetsTemplatesReadmePkg_readmeMd, map[string]*bintree{}},
+            }},
+            "sample-program": &bintree{nil, map[string]*bintree{
+                "app": &bintree{nil, map[string]*bintree{
+                    "main.cpp": &bintree{assetsTemplatesSampleProgramAppMainCpp, map[string]*bintree{}},
+                }},
+                "pkg": &bintree{nil, map[string]*bintree{
+                    "main.cpp":   &bintree{assetsTemplatesSampleProgramPkgMainCpp, map[string]*bintree{}},
+                    "output.cpp": &bintree{assetsTemplatesSampleProgramPkgOutputCpp, map[string]*bintree{}},
+                    "output.h":   &bintree{assetsTemplatesSampleProgramPkgOutputH, map[string]*bintree{}},
+                }},
+                "pkg-header-only": &bintree{nil, map[string]*bintree{
+                    "main.cpp":  &bintree{assetsTemplatesSampleProgramPkgHeaderOnlyMainCpp, map[string]*bintree{}},
+                    "printer.h": &bintree{assetsTemplatesSampleProgramPkgHeaderOnlyPrinterH, map[string]*bintree{}},
+                }},
+            }},
+        }},
+    }},
 }}
 
 // RestoreAsset restores an asset under the given directory
 func RestoreAsset(dir, name string) error {
-	data, err := Asset(name)
-	if err != nil {
-		return err
-	}
-	info, err := AssetInfo(name)
-	if err != nil {
-		return err
-	}
-	err = os.MkdirAll(_filePath(dir, filepath.Dir(name)), os.FileMode(0755))
-	if err != nil {
-		return err
-	}
-	err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
-	if err != nil {
-		return err
-	}
-	err = os.Chtimes(_filePath(dir, name), info.ModTime(), info.ModTime())
-	if err != nil {
-		return err
-	}
-	return nil
+    data, err := Asset(name)
+    if err != nil {
+        return err
+    }
+    info, err := AssetInfo(name)
+    if err != nil {
+        return err
+    }
+    err = os.MkdirAll(_filePath(dir, filepath.Dir(name)), os.FileMode(0755))
+    if err != nil {
+        return err
+    }
+    err = ioutil.WriteFile(_filePath(dir, name), data, info.Mode())
+    if err != nil {
+        return err
+    }
+    err = os.Chtimes(_filePath(dir, name), info.ModTime(), info.ModTime())
+    if err != nil {
+        return err
+    }
+    return nil
 }
 
 // RestoreAssets restores an asset under the given directory recursively
 func RestoreAssets(dir, name string) error {
-	children, err := AssetDir(name)
-	// File
-	if err != nil {
-		return RestoreAsset(dir, name)
-	}
-	// Dir
-	for _, child := range children {
-		err = RestoreAssets(dir, filepath.Join(name, child))
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+    children, err := AssetDir(name)
+    // File
+    if err != nil {
+        return RestoreAsset(dir, name)
+    }
+    // Dir
+    for _, child := range children {
+        err = RestoreAssets(dir, filepath.Join(name, child))
+        if err != nil {
+            return err
+        }
+    }
+    return nil
 }
 
 func _filePath(dir, name string) string {
-	cannonicalName := strings.Replace(name, "\\", "/", -1)
-	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
+    cannonicalName := strings.Replace(name, "\\", "/", -1)
+    return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

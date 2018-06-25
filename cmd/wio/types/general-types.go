@@ -8,13 +8,13 @@
 package types
 
 import (
-    "wio/cmd/wio/constants"
     "bufio"
-    "strings"
-    "wio/cmd/wio/utils/io"
-    "wio/cmd/wio/errors"
     "gopkg.in/yaml.v2"
     "regexp"
+    "strings"
+    "wio/cmd/wio/constants"
+    "wio/cmd/wio/errors"
+    "wio/cmd/wio/utils/io"
 )
 
 // ############################################### Targets ##################################################
@@ -24,6 +24,7 @@ type Target interface {
     GetSrc() string
     GetBoard() string
     GetFramework() string
+    GetPlatform() string
     GetFlags() TargetFlags
     GetDefinitions() TargetDefinitions
 }
@@ -86,7 +87,6 @@ func (appTargetDefinitions AppTargetDefinitions) GetPkgDefinitions() []string {
 // Structure to handle individual target inside targets for project of app AVR type
 type AppAVRTarget struct {
     Src         string
-    Framework   string
     Board       string
     Flags       AppTargetFlags
     Definitions AppTargetDefinitions
@@ -100,8 +100,14 @@ func (appTargetTag AppAVRTarget) GetBoard() string {
     return appTargetTag.Board
 }
 
+// App will have only 1 framework
 func (appTargetTag AppAVRTarget) GetFramework() string {
-    return appTargetTag.Framework
+    return "null"
+}
+
+// App will have only 1 framework
+func (appTargetTag AppAVRTarget) GetPlatform() string {
+    return "null"
 }
 
 func (appTargetTag AppAVRTarget) GetFlags() TargetFlags {
@@ -196,6 +202,10 @@ func (pkgAVRTarget PkgAVRTarget) GetFramework() string {
     return pkgAVRTarget.Framework
 }
 
+func (pkgAVRTarget PkgAVRTarget) GetPlatform() string {
+    return pkgAVRTarget.Platform
+}
+
 func (pkgAVRTarget PkgAVRTarget) GetDefinitions() TargetDefinitions {
     return pkgAVRTarget.Definitions
 }
@@ -249,16 +259,16 @@ type MainTag interface {
 type CompileOptions interface {
     IsHeaderOnly() bool
     GetPlatform() string
+    GetFramework() string
 }
 
 type Configurations struct {
-    WioVersion            string   `yaml:"minimum_wio_version"`
-    SupportedPlatforms    []string `yaml:"supported_platforms"`
-    UnSupportedPlatforms  []string `yaml:"unsupported_platforms"`
-    SupportedFrameworks   []string `yaml:"supported_frameworks"`
-    UnSupportedFrameworks []string `yaml:"unsupported_frameworks"`
-    SupportedBoards       []string `yaml:"supported_boards"`
-    UnSupportedBoards     []string `yaml:"unsupported_boards"`
+    WioVersion           string   `yaml:"minimum_wio_version"`
+    HeaderOnly           bool     `yaml:"header_only"`
+    SupportedPlatforms   []string `yaml:"supported_platforms"`
+    UnSupportedPlatforms []string `yaml:"unsupported_platforms"`
+    SupportedBoards      []string `yaml:"supported_boards"`
+    UnSupportedBoards    []string `yaml:"unsupported_boards"`
 }
 
 // ############################################# APP Project ###############################################
@@ -272,7 +282,8 @@ type AppTag struct {
 }
 
 type AppCompileOptions struct {
-    Platform string
+    Platform  string
+    Framework string
 }
 
 func (appCompileOptions AppCompileOptions) IsHeaderOnly() bool {
@@ -281,6 +292,10 @@ func (appCompileOptions AppCompileOptions) IsHeaderOnly() bool {
 
 func (appCompileOptions AppCompileOptions) GetPlatform() string {
     return appCompileOptions.Platform
+}
+
+func (appCompileOptions AppCompileOptions) GetFramework() string {
+    return appCompileOptions.Framework
 }
 
 func (appTag AppTag) GetName() string {
@@ -317,19 +332,6 @@ type PackageMeta struct {
     License      string
 }
 
-type PkgCompileOptions struct {
-    HeaderOnly bool `yaml:"header_only"`
-    Platform   string
-}
-
-func (pkgCompileOptions PkgCompileOptions) IsHeaderOnly() bool {
-    return pkgCompileOptions.HeaderOnly
-}
-
-func (pkgCompileOptions PkgCompileOptions) GetPlatform() string {
-    return pkgCompileOptions.Platform
-}
-
 type Flags struct {
     AllowOnlyGlobalFlags   bool     `yaml:"allow_only_global_flags"`
     AllowOnlyRequiredFlags bool     `yaml:"allow_only_required_flags"`
@@ -350,12 +352,11 @@ type Definitions struct {
 
 // Structure to hold information about project type: lib
 type PkgTag struct {
-    Ide            string
-    Meta           PackageMeta
-    Config         Configurations
-    CompileOptions PkgCompileOptions `yaml:"compile_options"`
-    Flags          Flags
-    Definitions    Definitions
+    Ide         string
+    Meta        PackageMeta
+    Config      Configurations
+    Flags       Flags
+    Definitions Definitions
 }
 
 func (pkgTag PkgTag) GetName() string {
@@ -373,23 +374,17 @@ func (pkgTag PkgTag) GetIde() string {
     return pkgTag.Ide
 }
 
+// no compile option for pkg
 func (pkgTag PkgTag) GetCompileOptions() CompileOptions {
-    return pkgTag.CompileOptions
+    return nil
 }
-
-type Type int
-
-const (
-    App Type = 0
-    Pkg Type = 1
-)
 
 type Config struct {
     Config IConfig
-    Type   Type
+    Type   constants.Type
 }
 
-func (c Config) GetType() string {
+func (c Config) GetType() constants.Type {
     return c.Config.GetType()
 }
 
@@ -409,16 +404,17 @@ func (c Config) SetDependencies(tag DependenciesTag) {
     c.Config.SetDependencies(tag)
 }
 
-func (c Config) PrettyPrint(path string) error {
-    return prettyPrintConfig(c.Config, path)
+func (c Config) PrettyPrint(path string, showHelp bool) error {
+    return prettyPrintConfigSpacing(c, path, showHelp)
 }
 
 type IConfig interface {
-    GetType() string
+    GetType() constants.Type
     GetMainTag() MainTag
     GetTargets() Targets
     GetDependencies() DependenciesTag
     SetDependencies(tag DependenciesTag)
+    PrettyPrint(string, bool) error
 }
 
 type AppConfig struct {
@@ -427,7 +423,7 @@ type AppConfig struct {
     DependenciesTag DependenciesTag `yaml:"dependencies"`
 }
 
-func (appConfig *AppConfig) GetType() string {
+func (appConfig *AppConfig) GetType() constants.Type {
     return constants.APP
 }
 
@@ -453,7 +449,7 @@ type PkgConfig struct {
     DependenciesTag DependenciesTag `yaml:"dependencies"`
 }
 
-func (pkgConfig *PkgConfig) GetType() string {
+func (pkgConfig *PkgConfig) GetType() constants.Type {
     return constants.PKG
 }
 
@@ -501,12 +497,12 @@ type DConfig struct {
 }
 
 // Pretty print wio.yml
-func (pkgConfig *PkgConfig) PrettyPrint(path string) error {
-    return prettyPrintConfig(pkgConfig, path)
+func (pkgConfig *PkgConfig) PrettyPrint(path string, showHelp bool) error {
+    return prettyPrintConfigSpacing(pkgConfig, path, showHelp)
 }
 
-func (appConfig *AppConfig) PrettyPrint(path string) error {
-    return prettyPrintConfig(appConfig, path)
+func (appConfig *AppConfig) PrettyPrint(path string, showHelp bool) error {
+    return prettyPrintConfigSpacing(appConfig, path, showHelp)
 }
 
 func prettyPrintConfig(config IConfig, path string) error {
@@ -518,7 +514,7 @@ func prettyPrintConfig(config IConfig, path string) error {
 }
 
 // Write configuration with nice spacing and information
-func prettyPrintHelp(config IConfig, filePath string) error {
+func prettyPrintConfigSpacing(projectConfig IConfig, filePath string, showHelp bool) error {
     appInfoPath := "templates" + io.Sep + "config" + io.Sep + "app-helper.txt"
     pkgInfoPath := "templates" + io.Sep + "config" + io.Sep + "pkg-helper.txt"
     targetsInfoPath := "templates" + io.Sep + "config" + io.Sep + "targets-helper.txt"
@@ -557,7 +553,7 @@ func prettyPrintHelp(config IConfig, filePath string) error {
     }
 
     // marshall yml data
-    if ymlData, err = yaml.Marshal(config); err != nil {
+    if ymlData, err = yaml.Marshal(projectConfig); err != nil {
         marshallError := errors.YamlMarshallError{
             Err: err,
         }
@@ -576,9 +572,9 @@ func prettyPrintHelp(config IConfig, filePath string) error {
     metaTagPat := regexp.MustCompile(`(^meta:)|((\s| |^\w)meta:(\s+|))`)
 
     // empty array
-    emptyArrayPat := regexp.MustCompile(`:\s+\[]`)
+    emptyArrayPat := regexp.MustCompile(`:\s+\[\]`)
     // empty object
-    emptyMapPat := regexp.MustCompile(`:\s+{}`)
+    emptyMapPat := regexp.MustCompile(`:\s+\{\}`)
     // empty tag
     emptyTagPat := regexp.MustCompile(`:\s+\n+|:\s+"\s+"|:\s+""|:"\s+"|:""`)
 
@@ -599,18 +595,28 @@ func prettyPrintHelp(config IConfig, filePath string) error {
         }
 
         if appTagPat.MatchString(line) {
-            finalStr += string(appInfoData) + "\n"
+            if showHelp {
+                finalStr += string(appInfoData) + "\n"
+            }
+
             finalStr += line
         } else if pkgTagPat.MatchString(line) {
-            finalStr += string(pkgInfoData) + "\n"
+            if showHelp {
+                finalStr += string(pkgInfoData) + "\n"
+            }
+
             finalStr += line
         } else if targetsTagPat.MatchString(line) {
             finalStr += "\n"
-            finalStr += string(targetsInfoData) + "\n"
+            if showHelp {
+                finalStr += string(targetsInfoData) + "\n"
+            }
             finalStr += line
         } else if dependenciesTagPat.MatchString(line) {
             finalStr += "\n"
-            finalStr += string(dependenciesInfoData) + "\n"
+            if showHelp {
+                finalStr += string(dependenciesInfoData) + "\n"
+            }
             finalStr += line
         } else if configTagPat.MatchString(line) || compileOptionsTagPat.MatchString(line) ||
             metaTagPat.MatchString(line) {

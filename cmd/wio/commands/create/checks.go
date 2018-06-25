@@ -10,11 +10,11 @@ import (
     goerr "errors"
     "github.com/urfave/cli"
     "os"
+    "path/filepath"
     "wio/cmd/wio/errors"
     "wio/cmd/wio/log"
     "wio/cmd/wio/utils"
     "wio/cmd/wio/utils/io"
-    "path/filepath"
 )
 
 // Check directory
@@ -89,7 +89,7 @@ func performPreCreateCheck(directory string, onlyConfig bool) {
             if err := utils.RemoveContents(directory); err != nil {
                 log.WriteErrorlnExit(err)
             } else {
-                log.Writeln(log.VERB, nil, "deleted all the files from: %s", directory)
+                log.Verbln("deleted all the files from: %s", directory)
             }
         }
     }
