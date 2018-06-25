@@ -14,3 +14,8 @@ cmd/wio/utils/io/bindata.go
 
 # Toolchain symlink
 toolchain/toolchain
+
+# Test folders
+test/
+tests/
+wio-test/
